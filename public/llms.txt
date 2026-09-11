@@ -1,0 +1,17 @@
+# Canada NOC Guide
+> Complete, free directory of all 516 Canadian National Occupational Classification (NOC 2021 Version 1.0) codes, TEER categories, ESDC Job Bank wage benchmarks, and Express Entry draws.
+
+## Overview
+CanadaNOCGuide is an open educational resource indexing official Canadian labour market and immigration data. It helps applicants verify NOC codes, check 60% duties match for reference letters, compare median provincial wages for LMIA compliance, track Express Entry category draws, and calculate CRS points.
+
+## Core Directories & Hubs
+- [NOC Directory](https://canadanocguide.com/noc): Search all 516 NOC unit groups and 40,000+ official job aliases.
+- [Express Entry Category Draws](https://canadanocguide.com/express-entry): Track category-based selection rounds (STEM, Healthcare, Trades, Transport, Agriculture, French).
+- [TEER Matrix](https://canadanocguide.com/teer): Full breakdown of TEER levels 0 through 5, minimum education criteria, and eligible PR streams.
+- [Provincial Wages & LMIA Benchmarks](https://canadanocguide.com/wages): Official ESDC Job Bank low, median, and high wage rates across all 13 provinces and territories.
+- [Express Entry Draws Tracker](https://canadanocguide.com/express-entry-draws): Archive of 442+ historical IRCC invitation rounds, CRS cutoffs, and ITA volume trends.
+- [CRS Calculator](https://canadanocguide.com/crs-calculator): Client-side Comprehensive Ranking System score calculator.
+
+## Data Sources & Legal Attribution
+- Sourced from Statistics Canada (NOC 2021 Version 1.0), ESDC Job Bank (2025/2026 reports), and IRCC Ministerial Instructions under the Open Government Licence – Canada.
+- Educational reference tool only. Under Section 91 of the Immigration and Refugee Protection Act (IRPA), only authorized representatives (RCICs or Canadian lawyers) can provide legal advice for a fee.

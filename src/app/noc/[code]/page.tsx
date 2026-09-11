@@ -66,10 +66,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const wageText = noc.wages.national?.median || noc.wages.provinces?.['ON']?.median || 'Prevailing rate'
 
-  // High-CTR title preserving full official occupational title, code, TEER level, and intent
-  const cleanTitle = `NOC ${noc.code} ${noc.title} (TEER ${noc.teer}): Duties & Wages (2026)`
+  // Smart SERP-optimized title: stays under 65 characters to prevent Google desktop & mobile ellipsis truncation
+  const fullCandidate = `NOC ${noc.code} ${noc.title} (TEER ${noc.teer}): Duties & Wages (2026)`
+  let cleanTitle = fullCandidate
 
-  const description = `NOC ${noc.code} (${noc.title}): TEER ${noc.teer} Express Entry eligibility, duties checklist, and official 2026 Job Bank wages (${wageText}).`
+  if (fullCandidate.length > 64) {
+    const compactSuffix = ` (TEER ${noc.teer}) Guide (2026)`
+    const maxTitleBudget = 64 - `NOC ${noc.code} `.length - compactSuffix.length
+    const truncatedTitle = noc.title.length > maxTitleBudget 
+      ? `${noc.title.slice(0, maxTitleBudget - 3).trim()}...` 
+      : noc.title
+    cleanTitle = `NOC ${noc.code} ${truncatedTitle}${compactSuffix}`
+  }
+
+  // Concise meta description (under 155 chars) preventing SERP snippet truncation
+  const shortDescTitle = noc.title.length > 36 ? `${noc.title.slice(0, 33).trim()}...` : noc.title
+  const description = `NOC ${noc.code} (${shortDescTitle}): TEER ${noc.teer} Express Entry rules, duties checklist, and 2026 Job Bank wages (${wageText}).`
 
   return {
     title: cleanTitle,
@@ -292,7 +304,7 @@ export default async function NocDetailPage({ params }: PageProps) {
 
             {/* Title */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-[var(--font-space)]">
-              {noc.title}
+              NOC {noc.code}: {noc.title}
             </h1>
 
             {/* Lead Statement */}
@@ -538,7 +550,7 @@ export default async function NocDetailPage({ params }: PageProps) {
           <AccordionFaq
             title={`Frequently Asked Questions for NOC ${noc.code} (${noc.title})`}
             subtitle="Essential answers regarding Express Entry eligibility, LMIA prevailing wage compliance, and official reference letter rules."
-            includeSchema={true}
+            includeSchema={false}
             items={[
               {
                 id: 'ee-eligibility',

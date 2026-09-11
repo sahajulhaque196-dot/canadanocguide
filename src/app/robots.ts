@@ -19,6 +19,14 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
       {
+        userAgent: 'OAI-SearchBot',
+        allow: '/',
+      },
+      {
+        userAgent: 'PerplexityBot',
+        allow: '/',
+      },
+      {
         userAgent: 'GPTBot',
         disallow: ['/'],
       },

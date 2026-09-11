@@ -188,7 +188,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const title = `${prov.name} Wage Rates & LMIA Pay Table (2026)`
-  const description = `Official 2025/2026 ESDC Job Bank wage table for ${prov.name}. Check low, median, and high wages across all occupations and LMIA prevailing wage requirements.`
+  const description = `2025/2026 ESDC Job Bank wage table for ${prov.name}. Compare low, median, and high wages across all occupations for LMIA compliance.`
   const canonicalUrl = `https://canadanocguide.com/wages/${prov.slug}`
 
   return {
