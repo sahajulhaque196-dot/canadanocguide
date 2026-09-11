@@ -11,13 +11,13 @@ import AuthorSection from '@/components/home/AuthorSection'
 import FaqSection from '@/components/home/FaqSection'
 import Footer from '@/components/home/Footer'
 
+import { getAlternates } from '@/lib/seo'
+
 export const metadata: Metadata = {
   title: 'Canada NOC Code Finder (2026): 516 NOC Codes & TEER',
   description:
     'Free Canada NOC code finder indexing all 516 NOC codes (2021 list). Check your TEER categories, track Express Entry draws (2026), and compare Job Bank wages.',
-  alternates: {
-    canonical: 'https://canadanocguide.com',
-  },
+  alternates: getAlternates('/'),
 }
 
 export default function HomePage() {

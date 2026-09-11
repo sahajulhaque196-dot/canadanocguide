@@ -12,6 +12,8 @@ interface NocItem {
   wage: string
   isEE?: boolean
   topTitles?: string[]
+  noc2016?: string[]
+  noc2016Titles?: string[]
 }
 
 export interface NocDirectoryTableProps {
@@ -73,8 +75,10 @@ function NocDirectoryTableInner({ initialItems }: NocDirectoryTableProps) {
         const q = activeQuery.toLowerCase()
         const matchCode = item.code.includes(q)
         const matchTitle = item.title.toLowerCase().includes(q)
+        const matchNoc2016 = item.noc2016 && item.noc2016.some((c) => c.includes(q))
+        const matchNoc2016Title = item.noc2016Titles && item.noc2016Titles.some((t) => t.toLowerCase().includes(q))
         const matchAliases = item.topTitles && item.topTitles.some((t) => t.toLowerCase().includes(q))
-        if (!matchCode && !matchTitle && !matchAliases) return false
+        if (!matchCode && !matchTitle && !matchNoc2016 && !matchNoc2016Title && !matchAliases) return false
       }
 
       return true
@@ -267,6 +271,11 @@ function NocDirectoryTableInner({ initialItems }: NocDirectoryTableProps) {
                       <Link href={`/noc/${item.code}`} className="hover:text-cyan-300 transition-colors">
                         {item.title}
                       </Link>
+                      {item.noc2016 && item.noc2016.length > 0 && (
+                        <div className="text-[11px] font-mono text-amber-400/90 mt-0.5">
+                          Former 2016: {item.noc2016.join(', ')}
+                        </div>
+                      )}
                     </td>
                     <td className="py-3.5 px-4 font-mono text-xs text-slate-300">
                       <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700">

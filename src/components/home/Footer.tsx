@@ -79,6 +79,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/noc-converter" className="text-amber-300 hover:text-amber-200 transition-colors flex items-center gap-1 font-semibold">
+                  <span>🔄 NOC Converter (2016 to 2021)</span>
+                </Link>
+              </li>
+              <li>
                 <Link href="/express-entry" className="hover:text-cyan-400 transition-colors">
                   Priority Categories (PR)
                 </Link>

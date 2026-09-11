@@ -4,13 +4,12 @@ import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
+import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | CanadaNOCGuide',
   description: 'Privacy Policy for CanadaNOCGuide. Learn how we handle cookies, analytics, and user privacy in compliance with PIPEDA and GDPR.',
-  alternates: {
-    canonical: 'https://canadanocguide.com/privacy-policy',
-  },
+  alternates: getAlternates('/privacy-policy'),
 }
 
 const PRIVACY_FAQS = [

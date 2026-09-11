@@ -7,14 +7,13 @@ import NocDirectoryTable from '@/components/noc/NocDirectoryTable'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
 import searchIndexData from '@/data/searchIndex.json'
+import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Canada NOC Directory: Search All 516 Occupations & TEER (2026)',
   description:
     'Search all 516 Canadian NOC 2021 codes. Verify TEER categories, Express Entry eligibility, Job Bank wages, and official job duties in one directory.',
-  alternates: {
-    canonical: 'https://canadanocguide.com/noc',
-  },
+  alternates: getAlternates('/noc'),
   openGraph: {
     title: 'Canada NOC Directory: Search All 516 Occupations & TEER (2026)',
     description: 'Search the complete directory of all 516 Canadian National Occupational Classification codes with our fast NOC code finder.',

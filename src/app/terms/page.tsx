@@ -4,13 +4,12 @@ import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
+import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Terms of Use & Legal Disclaimer | CanadaNOCGuide',
   description: 'Terms of Use, legal disclaimer under Section 91 IRPA, and Open Government Licence data attribution for CanadaNOCGuide.',
-  alternates: {
-    canonical: 'https://canadanocguide.com/terms',
-  },
+  alternates: getAlternates('/terms'),
 }
 
 const TERMS_FAQS = [

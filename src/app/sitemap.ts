@@ -21,6 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/noc-converter`,
+      lastModified: nocReferenceDate,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/express-entry-draws`,
       lastModified: now,
       changeFrequency: 'daily',

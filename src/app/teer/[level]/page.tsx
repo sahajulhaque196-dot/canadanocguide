@@ -11,6 +11,7 @@ import allNocs from '@/data/allNocsDetail.json'
 import { TEER_LEVELS } from '@/data/teerData'
 import type { NocRecord } from '@/types/noc'
 import TeerNocTable from '@/components/teer/TeerNocTable'
+import { getAlternates } from '@/lib/seo'
 
 interface PageProps {
   params: Promise<{ level: string }>
@@ -354,9 +355,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description,
-    alternates: {
-      canonical: canonicalUrl,
-    },
+    alternates: getAlternates(`/teer/${teer.level}`),
     openGraph: {
       title,
       description,

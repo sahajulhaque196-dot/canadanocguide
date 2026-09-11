@@ -6,14 +6,13 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import DrawsTable from '@/components/draws/DrawsTable'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
+import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Express Entry Draws (2026): Latest CRS Cutoffs & History',
   description:
     'Track official Express Entry draws (2026). Check latest CRS cutoff scores, ITA invitation volumes, and category trends for STEM, Healthcare, and Trades.',
-  alternates: {
-    canonical: 'https://canadanocguide.com/express-entry-draws',
-  },
+  alternates: getAlternates('/express-entry-draws'),
   openGraph: {
     title: 'Express Entry Draws & Latest CRS Cutoffs (2026)',
     description: 'Complete archive of all 442 official Express Entry invitation rounds, CRS scores, and category streams.',

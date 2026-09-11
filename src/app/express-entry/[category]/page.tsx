@@ -12,6 +12,7 @@ import eeDraws from '@/data/eeDraws.json'
 import { CATEGORIES } from '@/data/categoryData'
 import type { NocRecord, EEDrawItem } from '@/types/noc'
 import CategoryNocTable from '@/components/category/CategoryNocTable'
+import { getAlternates } from '@/lib/seo'
 
 interface PageProps {
   params: Promise<{ category: string }>
@@ -51,9 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description,
-    alternates: {
-      canonical: canonicalUrl,
-    },
+    alternates: getAlternates(`/express-entry/${cat.id}`),
     openGraph: {
       title,
       description,

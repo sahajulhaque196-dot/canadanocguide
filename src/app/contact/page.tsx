@@ -4,13 +4,12 @@ import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
+import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Contact Us & Data Feedback | CanadaNOCGuide',
   description: 'Have a question about NOC codes, spotted a wage data discrepancy, or want to suggest an update? Get in touch with the CanadaNOCGuide editorial team.',
-  alternates: {
-    canonical: 'https://canadanocguide.com/contact',
-  },
+  alternates: getAlternates('/contact'),
 }
 
 const CONTACT_FAQS = [

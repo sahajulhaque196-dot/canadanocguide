@@ -6,14 +6,13 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import CrsCalculator from '@/components/calculator/CrsCalculator'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
+import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'CRS Calculator (2026): Calculate Canada Express Entry Points',
   description:
     'Calculate your official Canada Express Entry CRS score (2026). Check points for age, education, language CLB, work experience, and get instant boosters.',
-  alternates: {
-    canonical: 'https://canadanocguide.com/crs-calculator',
-  },
+  alternates: getAlternates('/crs-calculator'),
   openGraph: {
     title: 'Canada Express Entry CRS Calculator (2026) | Real-Time Points',
     description:

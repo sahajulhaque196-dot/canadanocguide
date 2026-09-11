@@ -5,14 +5,13 @@ import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
+import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Canada LMIA Prevailing Wage Rates by Province (2026)',
   description:
     'Compare Canadian median wages and LMIA prevailing wage thresholds across all provinces and territories. Official ESDC Job Bank data for work permits.',
-  alternates: {
-    canonical: 'https://canadanocguide.com/wages',
-  },
+  alternates: getAlternates('/wages'),
   openGraph: {
     title: 'Canada LMIA Prevailing Wage Rates by Province (2026)',
     description:

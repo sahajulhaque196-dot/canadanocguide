@@ -6,14 +6,13 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
 import { TEER_LEVELS } from '@/data/teerData'
+import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Canada TEER Categories (0–5): PR Guide (2026)',
   description:
     'Complete guide to Canadian TEER levels (0 to 5). Check which education levels qualify for Express Entry (FSW & CEC) vs Provincial Nominee Programs (PNP).',
-  alternates: {
-    canonical: 'https://canadanocguide.com/teer',
-  },
+  alternates: getAlternates('/teer'),
   openGraph: {
     title: 'Canada TEER Categories (0–5): PR Eligibility Guide',
     description:

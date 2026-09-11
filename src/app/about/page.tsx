@@ -6,13 +6,12 @@ import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
+import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'About Us & Editorial Methodology | CanadaNOCGuide',
   description: 'Learn about CanadaNOCGuide, our creator Sahajul Haque, our mission to simplify Canadian immigration data, and our government data verification methodology.',
-  alternates: {
-    canonical: 'https://canadanocguide.com/about',
-  },
+  alternates: getAlternates('/about'),
   openGraph: {
     title: 'About CanadaNOCGuide & Editorial Methodology | Sahajul Haque',
     description: 'Learn about our mission to make Canadian NOC data free and accessible. Verified with IRCC and ESDC open data.',

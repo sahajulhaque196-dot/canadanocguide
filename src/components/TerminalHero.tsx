@@ -5,6 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
+import eeDraws from '@/data/eeDraws.json'
+
 interface SearchItem {
   code: string
   title: string
@@ -13,12 +15,15 @@ interface SearchItem {
   wage: string
   isEE?: boolean
   topTitles?: string[]
+  noc2016?: string[]
+  noc2016Titles?: string[]
 }
 
+const latestDraw = eeDraws[0]
 
 const QUICK_STATS = [
   { val: '516', title: 'Official NOC Codes', desc: 'Complete 2021 list' },
-  { val: '442', title: 'Express Entry Draws', desc: 'Latest CRS cutoffs' },
+  { val: eeDraws.length.toString(), title: 'Express Entry Draws', desc: 'Latest CRS cutoffs' },
   { val: '44,376', title: 'Real Wage Records', desc: 'Job Bank 2025/26 data' },
   { val: '40,000+', title: 'Job Titles Covered', desc: 'Search any job role' }
 ]
@@ -52,6 +57,8 @@ export default function ModernHero() {
           const matches = db.filter((item) =>
             item.title.toLowerCase().includes(q) ||
             item.code.includes(q) ||
+            (item.noc2016 && item.noc2016.some((c) => c.includes(q))) ||
+            (item.noc2016Titles && item.noc2016Titles.some((t) => t.toLowerCase().includes(q))) ||
             item.category.toLowerCase().includes(q) ||
             (item.topTitles && item.topTitles.some((t) => t.toLowerCase().includes(q)))
           ).slice(0, 6)
@@ -127,7 +134,7 @@ export default function ModernHero() {
           <div className="flex items-center gap-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/40 bg-slate-950/85 text-cyan-300 text-[11px] font-mono tracking-wide shadow-[0_0_20px_rgba(6,182,212,0.2)] backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>OFFICIAL 2026 DATA // LATEST DRAW #441 (CRS 475)</span>
+              <span>OFFICIAL 2026 DATA // LATEST DRAW #{latestDraw?.number || 441} (CRS {latestDraw?.crs || 475})</span>
             </div>
             <span className="text-[10px] font-mono text-slate-400 bg-slate-900/60 px-2 py-0.5 rounded border border-slate-800">
               UPDATED FOR 2026
@@ -203,8 +210,13 @@ export default function ModernHero() {
                         {item.code}
                       </span>
                       <div>
-                        <div className="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">
-                          {item.title}
+                        <div className="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors flex items-center gap-1.5 flex-wrap">
+                          <span>{item.title}</span>
+                          {item.noc2016 && item.noc2016.length > 0 && (
+                            <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                              2016: {item.noc2016.join(', ')}
+                            </span>
+                          )}
                         </div>
                         <div className="text-[10px] text-slate-400">
                           TEER {item.teer} · <span className="text-emerald-400">{item.category}</span>

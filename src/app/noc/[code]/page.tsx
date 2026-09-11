@@ -10,6 +10,7 @@ import Footer from '@/components/home/Footer'
 
 // Import all NOC data
 import allNocs from '@/data/allNocsDetail.json'
+import { getAlternates } from '@/lib/seo'
 
 interface PageProps {
   params: Promise<{ code: string }>
@@ -44,6 +45,18 @@ interface NocRecord {
       isAnnual: boolean
     }>
   }
+  formerNoc2016?: Array<{
+    code: string
+    title: string
+    changeType: string
+    notes: string
+  }>
+  cityWages?: Record<string, {
+    low: string | null
+    median: string
+    high: string | null
+    isAnnual: boolean
+  }>
 }
 
 // Generate Static Params for all 516 NOC codes at build time
@@ -66,6 +79,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const wageText = noc.wages.national?.median || noc.wages.provinces?.['ON']?.median || 'Prevailing rate'
 
+  const formerCodes = noc.formerNoc2016 && noc.formerNoc2016.length > 0
+    ? ` Former NOC 2016: ${noc.formerNoc2016.map(f => f.code).join(', ')}.`
+    : ''
+
   // Smart SERP-optimized title: stays under 65 characters to prevent Google desktop & mobile ellipsis truncation
   const fullCandidate = `NOC ${noc.code} ${noc.title} (TEER ${noc.teer}): Duties & Wages (2026)`
   let cleanTitle = fullCandidate
@@ -80,15 +97,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   // Concise meta description (under 155 chars) preventing SERP snippet truncation
-  const shortDescTitle = noc.title.length > 36 ? `${noc.title.slice(0, 33).trim()}...` : noc.title
-  const description = `NOC ${noc.code} (${shortDescTitle}): TEER ${noc.teer} Express Entry rules, duties checklist, and 2026 Job Bank wages (${wageText}).`
+  const shortDescTitle = noc.title.length > 30 ? `${noc.title.slice(0, 27).trim()}...` : noc.title
+  const description = `NOC ${noc.code} (${shortDescTitle}): TEER ${noc.teer} Express Entry rules, duties checklist, and 2026 Job Bank wages (${wageText}).${formerCodes}`
 
   return {
     title: cleanTitle,
     description,
-    alternates: {
-      canonical: `https://canadanocguide.com/noc/${noc.code}`,
-    },
+    alternates: getAlternates(`/noc/${noc.code}`),
     openGraph: {
       title: cleanTitle,
       description,
@@ -168,6 +183,8 @@ export default async function NocDetailPage({ params }: PageProps) {
   const occupationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Occupation',
+    '@id': `https://canadanocguide.com/noc/${noc.code}#occupation`,
+    mainEntityOfPage: `https://canadanocguide.com/noc/${noc.code}`,
     name: noc.title,
     occupationalCategory: `NOC ${noc.code}`,
     description: noc.leadStatement,
@@ -221,6 +238,68 @@ export default async function NocDetailPage({ params }: PageProps) {
     ]
   }
 
+  // 3. FAQPage Schema for High CTR Rich Results in Google SERP
+  const formerFaq = (noc.formerNoc2016 && noc.formerNoc2016.length > 0)
+    ? [
+        {
+          '@type': 'Question',
+          name: `What was the NOC 2016 code for NOC ${noc.code} (${noc.title})?`,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: `Under Canada's previous NOC 2016 classification, ${noc.title} was categorized under NOC ${noc.formerNoc2016.map(f => `${f.code} (${f.title})`).join(' and ')}. In NOC 2021, it transitioned to NOC ${noc.code} under TEER ${noc.teer}.`,
+          },
+        },
+      ]
+    : []
+
+  const cityFaq = (noc.cityWages && Object.keys(noc.cityWages).length > 0)
+    ? [
+        {
+          '@type': 'Question',
+          name: `What is the prevailing wage for NOC ${noc.code} in Toronto, Vancouver, and Calgary?`,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: `According to ESDC Job Bank data, the median wage for NOC ${noc.code} (${noc.title}) is ${noc.cityWages['Toronto'] ? `$${noc.cityWages['Toronto'].median}/hr in Toronto` : ''}${noc.cityWages['Vancouver'] ? `, $${noc.cityWages['Vancouver'].median}/hr in Vancouver` : ''}${noc.cityWages['Calgary'] ? `, and $${noc.cityWages['Calgary'].median}/hr in Calgary` : ''}.`,
+          },
+        },
+      ]
+    : []
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `Is NOC ${noc.code} eligible for Canada Express Entry?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: noc.isEEEligible
+            ? `Yes. Because NOC ${noc.code} is classified as TEER ${noc.teer}, it qualifies for the Federal Skilled Worker Program (FSW) and Canadian Experience Class (CEC) under Express Entry.`
+            : `NOC ${noc.code} is in TEER ${noc.teer}, which is not directly eligible for standard Express Entry pools. However, you can apply through Provincial Nominee Program (PNP) semi-skilled streams or employer-sponsored work permits.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `What wage must my employer pay me for NOC ${noc.code}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `For an LMIA work permit, your employer must offer at least the median wage of ${rawWage} (or the prevailing median rate in your specific Canadian province of employment).`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `How many duties must match for my immigration reference letter?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Under Section 75(2) of the Immigration and Refugee Protection Regulations (IRPR), your employment reference letter must confirm you perform the actions in the lead statement and a substantial number (recommended at least 60%) of the official main duties listed.`,
+        },
+      },
+      ...formerFaq,
+      ...cityFaq,
+    ],
+  }
+
   return (
     <main className="min-h-screen bg-transparent text-slate-100 selection:bg-cyan-500 selection:text-black">
       
@@ -232,6 +311,10 @@ export default async function NocDetailPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       {/* Universal Navigation Bar */}
@@ -300,6 +383,17 @@ export default async function NocDetailPage({ params }: PageProps) {
               >
                 {noc.isEEEligible ? '✓ Express Entry Eligible (FSW & CEC)' : '⚠ PNP & Work Permits Only'}
               </Link>
+
+              {noc.formerNoc2016 && noc.formerNoc2016.length > 0 && (
+                <Link
+                  href="/noc-converter"
+                  className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30 transition-colors flex items-center gap-1 font-mono"
+                  title="Official NOC 2016 to 2021 Correspondence"
+                >
+                  <span>🔄 Former NOC 2016: {noc.formerNoc2016.map(f => f.code).join(', ')}</span>
+                  <span className="text-[10px] text-amber-400/80">↗</span>
+                </Link>
+              )}
             </div>
 
             {/* Title */}
@@ -394,6 +488,55 @@ export default async function NocDetailPage({ params }: PageProps) {
           </div>
         </section>
 
+        {/* Section 2.6: NOC 2016 to NOC 2021 Transition & Concordance */}
+        {noc.formerNoc2016 && noc.formerNoc2016.length > 0 && (
+          <section className="rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-950/20 via-slate-900/60 to-slate-950 p-6 sm:p-8 backdrop-blur-xl space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-500/20 pb-4">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                <h2 className="text-xl sm:text-2xl font-bold text-white font-[var(--font-space)]">
+                  NOC 2016 to NOC 2021 Transition &amp; Equivalency
+                </h2>
+              </div>
+              <Link
+                href="/noc-converter"
+                className="text-xs font-mono font-bold text-amber-300 hover:text-amber-200 transition-colors inline-flex items-center gap-1 shrink-0"
+              >
+                <span>Open Full NOC Converter Tool</span>
+                <span>→</span>
+              </Link>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Under Canada&apos;s previous NOC 2016 classification, this occupation was mapped under the following 4-digit code(s). When preparing your Express Entry profile or work reference letters, you must use the new 5-digit code <strong className="text-cyan-300 font-mono">NOC {noc.code}</strong>.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+              {noc.formerNoc2016.map((f, i) => (
+                <div key={i} className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-sm font-bold text-amber-400">
+                      Former NOC {f.code}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                      4-Digit Legacy
+                    </span>
+                  </div>
+                  <div className="text-xs font-semibold text-white">
+                    {f.title}
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-400">
+                    {f.changeType.split(',')[0]}
+                  </div>
+                  {f.notes && (
+                    <p className="text-[10px] text-slate-500 font-mono pt-1">
+                      {f.notes}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Section 3: Provincial Wages Breakdown */}
         <section id="wages" className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8 backdrop-blur-xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-slate-800 gap-2">
@@ -461,6 +604,37 @@ export default async function NocDetailPage({ params }: PageProps) {
               </tbody>
             </table>
           </div>
+
+          {/* Top Metropolitan Cities Wage Benchmarks */}
+          {noc.cityWages && Object.keys(noc.cityWages).length > 0 && (
+            <div className="mt-8 pt-6 border-t border-slate-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-1 gap-1">
+                <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                  <span>🏙️</span>
+                  <span>Top Metropolitan Cities Wage Rates (ESDC 2025/2026)</span>
+                </h3>
+                <span className="text-xs font-mono text-cyan-400">
+                  Economic Region Benchmarks
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                Official ESDC prevailing median wages across major Canadian metropolitan regions. Crucial for LMIA prevailing wage compliance and local job offer evaluations.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                {Object.entries(noc.cityWages).map(([city, w]) => (
+                  <div key={city} className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800/80 text-center space-y-1">
+                    <div className="text-xs font-bold text-slate-200">{city}</div>
+                    <div className="text-base sm:text-lg font-bold font-mono text-emerald-400">
+                      ${w.median}{w.isAnnual ? '/yr' : '/hr'}
+                    </div>
+                    <div className="text-[10px] font-mono text-slate-400">
+                      {w.low && w.high ? `$${w.low} - $${w.high}` : 'Prevailing rate'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Section 4: Employment Requirements */}
@@ -578,6 +752,16 @@ export default async function NocDetailPage({ params }: PageProps) {
                 answer: `Under Section 75(2) of the Immigration and Refugee Protection Regulations (IRPR), your employment reference letter must confirm you perform the actions in the lead statement and a substantial number (recommended at least 60%) of the official main duties listed above. You do not need to perform 100% of the duties.`,
                 defaultOpen: false,
               },
+              ...(noc.formerNoc2016 && noc.formerNoc2016.length > 0
+                ? [
+                    {
+                      id: 'former-2016-faq',
+                      question: `What was the NOC 2016 code for ${noc.title}?`,
+                      answer: `Under Canada's previous NOC 2016 classification, ${noc.title} was categorized under NOC ${noc.formerNoc2016.map(f => `${f.code} (${f.title})`).join(' and ')}. In NOC 2021, it officially transitioned to NOC ${noc.code} under TEER ${noc.teer}.`,
+                      defaultOpen: false,
+                    },
+                  ]
+                : []),
               ...(noc.priorityCategory === 'Healthcare Priority'
                 ? [
                     {

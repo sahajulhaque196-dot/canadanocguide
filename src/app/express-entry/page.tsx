@@ -5,14 +5,13 @@ import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
+import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Express Entry Priority Categories (2026): Eligible NOCs',
   description:
     'Explore IRCC category-based selection for Express Entry (2026). Check eligible NOC codes for STEM, Healthcare, Trades, Transport, Agriculture, and French.',
-  alternates: {
-    canonical: 'https://canadanocguide.com/express-entry',
-  },
+  alternates: getAlternates('/express-entry'),
   openGraph: {
     title: 'Express Entry Priority Categories (2026): Eligible NOCs',
     description:

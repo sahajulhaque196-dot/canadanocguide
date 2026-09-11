@@ -58,6 +58,14 @@ export default function HeaderNav() {
                 TEER Guide
               </Link>
               <Link
+                href="/noc-converter"
+                className={`transition-colors ${
+                  pathname === '/noc-converter' ? 'text-cyan-400 font-semibold' : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                NOC Converter
+              </Link>
+              <Link
                 href="/wages"
                 className={`transition-colors ${
                   pathname.startsWith('/wages') ? 'text-cyan-400 font-semibold' : 'text-slate-300 hover:text-white'
@@ -172,6 +180,13 @@ export default function HeaderNav() {
               className="block p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-cyan-950/30 text-slate-200 hover:text-white transition-colors text-xs font-mono"
             >
               📐 TEER Categories Guide (0 to 5) →
+            </Link>
+            <Link
+              href="/noc-converter"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block p-3 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold transition-colors text-xs font-mono"
+            >
+              🔄 NOC 2016 to 2021 Converter (4 to 5 Digit) →
             </Link>
             <Link
               href="/wages"

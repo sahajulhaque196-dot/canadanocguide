@@ -10,6 +10,7 @@ import type { NocRecord } from '@/types/noc'
 import ProvinceWageTable from '@/components/wages/ProvinceWageTable'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import { PROVINCE_WAGE_BENCHMARKS } from '@/data/wageBenchmarks'
+import { getAlternates } from '@/lib/seo'
 
 interface PageProps {
   params: Promise<{ province: string }>
@@ -194,9 +195,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description,
-    alternates: {
-      canonical: canonicalUrl,
-    },
+    alternates: getAlternates(`/wages/${prov.slug}`),
     openGraph: {
       title,
       description,
