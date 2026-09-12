@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AccordionFaq from '@/components/ui/AccordionFaq'
+import ContactForm from '@/components/ui/ContactForm'
 import Footer from '@/components/home/Footer'
 import { getAlternates } from '@/lib/seo'
 
@@ -140,6 +141,23 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
+
+        {/* Contact Form */}
+        <section className="p-6 sm:p-8 rounded-2xl border border-slate-800 bg-slate-900/40 backdrop-blur-xl space-y-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-mono uppercase">
+              Send a Message
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              Contact Form
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400">
+              Use the form below to report a data error, suggest an improvement, or send general feedback. We respond within 48 business hours.
+            </p>
+          </div>
+
+          <ContactForm />
+        </section>
 
         {/* Step-by-Step Correction Process */}
         <section className="p-6 sm:p-8 rounded-2xl border border-slate-800 bg-slate-900/30 space-y-6">

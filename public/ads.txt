@@ -1,4 +1,12 @@
-# Google AdSense ads.txt for canadanocguide.com
-# IMPORTANT: Replace pub-0000000000000000 below with your real AdSense publisher ID (e.g. pub-1234567890123456)
-google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
-
+# Google AdSense Authorized Digital Sellers (ads.txt) for canadanocguide.com
+#
+# ⚠️  ACTION REQUIRED BEFORE APPLYING TO ADSENSE:
+#     Replace pub-XXXXXXXXXXXXXXXX below with your real 16-digit AdSense Publisher ID.
+#     Your Publisher ID is found in AdSense account → Account → Account information.
+#     Format: ca-pub-1234567890123456
+#
+#     Also set the matching environment variable in Vercel:
+#     NEXT_PUBLIC_ADSENSE_PUB_ID = ca-pub-1234567890123456
+#
+# Once your AdSense application is approved, uncomment the line below and replace pub-XXXXXXXXXXXXXXXX with your real ID:
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

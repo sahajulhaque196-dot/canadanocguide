@@ -5,7 +5,9 @@ import type { Metadata } from 'next'
 import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import DutiesChecker from '@/components/noc/DutiesChecker'
+import RelatedNocs from '@/components/noc/RelatedNocs'
 import AccordionFaq from '@/components/ui/AccordionFaq'
+import ImmigrationDisclaimer from '@/components/ui/ImmigrationDisclaimer'
 import Footer from '@/components/home/Footer'
 
 // Import all NOC data
@@ -77,7 +79,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
   }
 
-  const wageText = noc.wages.national?.median || noc.wages.provinces?.['ON']?.median || 'Prevailing rate'
+  const cleanMedian = (val?: string | null) => (val && val !== 'N/A' && val.trim() !== '') ? val : null
+  const wageText = cleanMedian(noc.wages.national?.median) || cleanMedian(noc.wages.provinces?.['ON']?.median) || (noc.code.startsWith('000') ? 'Executive salary benchmark' : 'Prevailing rate')
 
   const formerCodes = noc.formerNoc2016 && noc.formerNoc2016.length > 0
     ? ` Former NOC 2016: ${noc.formerNoc2016.map(f => f.code).join(', ')}.`
@@ -174,11 +177,26 @@ export default async function NocDetailPage({ params }: PageProps) {
     NU: 'nunavut'
   }
 
-  // Parse numeric wage with safe provincial fallback instead of flat 35.00
-  const firstProvMedian = Object.values(noc.wages.provinces || {}).find((p) => p?.median)?.median
-  const rawWage = noc.wages.national?.median || noc.wages.provinces?.['ON']?.median || firstProvMedian || (noc.teer >= 4 ? '$18.50/hr' : '$32.00/hr')
-  const numericWage = parseFloat(rawWage.replace(/[^0-9.]/g, '')) || (noc.teer >= 4 ? 18.5 : 32.0)
-  const isAnnual = rawWage.includes('/yr') || numericWage > 1000
+  const categorySlugMap: Record<string, string> = {
+    'STEM Priority': 'stem',
+    'Healthcare Priority': 'healthcare',
+    'Trade Occupations': 'trades',
+    'Transport Occupations': 'transport',
+    'Agriculture and Agri-Food Occupations': 'agriculture',
+    'French Language Proficiency': 'french',
+  }
+  const currentCategorySlug = categorySlugMap[noc.priorityCategory]
+
+  // Parse numeric wage with safe provincial fallback and executive role handling
+  const cleanMedianVal = (val?: string | null) => (val && val !== 'N/A' && val.trim() !== '') ? val : null
+  const firstProvMedian = Object.values(noc.wages.provinces || {}).map(p => cleanMedianVal(p?.median)).find(Boolean)
+  const isExecutiveSalaried = noc.code.startsWith('000') || (noc.teer === 0 && !cleanMedianVal(noc.wages.national?.median))
+  const displayWage = cleanMedianVal(noc.wages.national?.median) || cleanMedianVal(noc.wages.provinces?.['ON']?.median) || firstProvMedian || (isExecutiveSalaried ? 'Salaried / Executive' : 'See ESDC Job Bank')
+  const rawWage = displayWage
+  const numericWageRaw = parseFloat(rawWage.replace(/[^0-9.]/g, ''))
+  const numericWage = !isNaN(numericWageRaw) && numericWageRaw > 0 ? numericWageRaw : (isExecutiveSalaried ? 65.0 : null)
+  const hasRealWage = numericWage !== null
+  const isAnnual = rawWage.includes('/yr') || (numericWage !== null && numericWage > 1000)
 
   // 1. Occupation Schema with safe property access and country location
   const occupationSchema = {
@@ -186,6 +204,9 @@ export default async function NocDetailPage({ params }: PageProps) {
     '@type': 'Occupation',
     '@id': `https://canadanocguide.com/noc/${noc.code}#occupation`,
     mainEntityOfPage: `https://canadanocguide.com/noc/${noc.code}`,
+    provider: {
+      '@id': 'https://canadanocguide.com/#organization',
+    },
     name: noc.title,
     occupationalCategory: `NOC ${noc.code}`,
     description: noc.leadStatement,
@@ -195,16 +216,18 @@ export default async function NocDetailPage({ params }: PageProps) {
       '@type': 'Country',
       name: 'Canada',
     },
-    estimatedSalary: [
-      {
-        '@type': 'MonetaryAmountDistribution',
-        name: 'Canada Median Wage',
-        currency: 'CAD',
-        median: numericWage,
-        duration: isAnnual ? 'P1Y' : 'PT1H',
-        unitText: isAnnual ? 'YEAR' : 'HOUR'
-      }
-    ]
+    ...(hasRealWage ? {
+      estimatedSalary: [
+        {
+          '@type': 'MonetaryAmountDistribution',
+          name: 'Canada Median Wage',
+          currency: 'CAD',
+          median: numericWage,
+          duration: isAnnual ? 'P1Y' : 'PT1H',
+          unitText: isAnnual ? 'YEAR' : 'HOUR'
+        }
+      ]
+    } : {})
   }
 
   // 2. BreadcrumbList Schema for Google Rich Snippet Results
@@ -320,11 +343,21 @@ export default async function NocDetailPage({ params }: PageProps) {
     {
       id: 'lmia-wage',
       question: `What wage must my employer pay me for NOC ${noc.code}?`,
-      plainTextAnswer: `For an LMIA work permit, your employer must offer at least the median wage of ${rawWage} (or the prevailing median rate in your specific Canadian province of employment).`,
-      answer: (
+      plainTextAnswer: hasRealWage
+        ? `For an LMIA work permit, your employer must offer at least the median wage of ${rawWage} (or the prevailing median rate in your specific Canadian province of employment).`
+        : `The prevailing median wage for NOC ${noc.code} varies by province. Your employer must meet or exceed the prevailing median wage published by ESDC Job Bank for your specific province of employment. Visit the ESDC Job Bank wage tool to check current rates.`,
+      answer: hasRealWage ? (
         <span>
           For an LMIA work permit, your employer must offer at least the median wage of{' '}
           <strong className="text-emerald-400">{rawWage}</strong> (or the prevailing median rate in your specific Canadian province of employment).
+        </span>
+      ) : (
+        <span>
+          The prevailing median wage for NOC {noc.code} varies by province. Your employer must meet or exceed the prevailing median wage published by{' '}
+          <a href="https://www.jobbank.gc.ca/trend-analysis/search-wages" target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline hover:text-cyan-300">
+            ESDC Job Bank
+          </a>{' '}
+          for your specific province of employment.
         </span>
       ),
       defaultOpen: false,
@@ -385,6 +418,9 @@ export default async function NocDetailPage({ params }: PageProps) {
             { label: `NOC ${noc.code} - ${noc.title}` }
           ]}
         />
+
+        {/* Educational disclaimer — required for immigration-niche AdSense compliance */}
+        <ImmigrationDisclaimer />
 
         {/* Master Header Card */}
         <div className="relative p-6 sm:p-10 rounded-3xl border border-slate-800 bg-gradient-to-b from-slate-900/80 via-slate-950 to-slate-900/60 backdrop-blur-xl shadow-2xl overflow-hidden">
@@ -455,10 +491,24 @@ export default async function NocDetailPage({ params }: PageProps) {
               NOC {noc.code}: {noc.title}
             </h1>
 
-            {/* Lead Statement */}
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed pt-1 max-w-4xl">
-              {noc.leadStatement}
-            </p>
+            {/* Lead Statement — Official Statistics Canada NOC 2021 Definition */}
+            <div className="pt-1 max-w-4xl">
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-slate-700 bg-slate-900/60 text-slate-400 text-[10px] font-mono mb-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0" />
+                Official definition · Statistics Canada NOC 2021 v1.0 ·{' '}
+                <a
+                  href="https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-cyan-400 hover:underline"
+                >
+                  statcan.gc.ca ↗
+                </a>
+              </div>
+              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                {noc.leadStatement}
+              </p>
+            </div>
 
           </div>
 
@@ -467,7 +517,7 @@ export default async function NocDetailPage({ params }: PageProps) {
             <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800">
               <span className="text-[11px] font-mono text-slate-400 block uppercase">Median Pay</span>
               <span className="text-xl sm:text-2xl font-bold font-mono text-emerald-400 mt-1 block">
-                {noc.wages.national?.median || noc.wages.provinces['ON']?.median || 'Varies by Prov.'}
+                {displayWage}
               </span>
               <span className="text-[10px] text-slate-400 mt-0.5 block">Prevailing median rate</span>
             </div>
@@ -515,7 +565,14 @@ export default async function NocDetailPage({ params }: PageProps) {
             </h2>
           </div>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Under Canada&apos;s National Occupational Classification (NOC 2021 Version 1.0), <strong className="text-white font-semibold">{noc.title}</strong> is categorized under <strong className="text-cyan-300">TEER {noc.teer}</strong>.
+            Under Canada&apos;s National Occupational Classification (NOC 2021 Version 1.0), <strong className="text-white font-semibold">{noc.title}</strong> is categorized under{' '}
+            <Link
+              href={`/teer/${noc.teer}`}
+              className="text-cyan-300 font-semibold underline underline-offset-2 hover:text-cyan-200 transition-colors"
+              title={`Explore TEER ${noc.teer} Education & PR Requirements`}
+            >
+              TEER {noc.teer}
+            </Link>.
             {noc.teer <= 1
               ? ' Occupations in this tier typically require a university degree (bachelor’s, master’s, or doctorate) or substantial managerial tenure.'
               : noc.teer <= 3
@@ -526,17 +583,51 @@ export default async function NocDetailPage({ params }: PageProps) {
             <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/60 space-y-1.5">
               <h3 className="text-xs font-mono font-bold text-cyan-400 uppercase">Express Entry Alignment</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                {noc.isEEEligible
-                  ? `Qualifies directly for the Federal Skilled Worker Program (FSW) and Canadian Experience Class (CEC). Work experience must be full-time (or equivalent part-time) and continuous for at least one year.`
-                  : `Classified under TEER ${noc.teer}, meaning this occupation does not qualify for direct Express Entry general pools. Candidates should focus on employer-driven Provincial Nominee Programs (PNP) or federal pilot pathways.`}
+                {noc.isEEEligible ? (
+                  <span>
+                    Qualifies directly for the{' '}
+                    <Link href="/express-entry" className="text-cyan-400 underline hover:text-cyan-300">
+                      Federal Skilled Worker (FSW) and Canadian Experience Class (CEC)
+                    </Link>{' '}
+                    under Express Entry. Work experience must be full-time (or equivalent part-time) and continuous for at least one year.
+                  </span>
+                ) : (
+                  <span>
+                    Classified under{' '}
+                    <Link href={`/teer/${noc.teer}`} className="text-amber-300 underline hover:text-amber-200">
+                      TEER {noc.teer}
+                    </Link>
+                    , meaning this occupation does not qualify for direct Express Entry general pools. Candidates should focus on employer-driven{' '}
+                    <Link href="/wages" className="text-cyan-400 underline hover:text-cyan-300">
+                      Provincial Nominee Programs (PNP)
+                    </Link>{' '}
+                    or federal pilot pathways.
+                  </span>
+                )}
               </p>
             </div>
             <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/60 space-y-1.5">
               <h3 className="text-xs font-mono font-bold text-emerald-400 uppercase">Target Category Status</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                {noc.priorityCategory !== 'General Stream'
-                  ? `Designated under IRCC's ${noc.priorityCategory} category. Candidates with 6 months of qualifying Canadian or foreign experience in this NOC can receive Invitations to Apply (ITAs) at significantly lower CRS cutoff thresholds.`
-                  : `Currently evaluated under standard General and CEC invitation rounds, or targeted through provincial in-demand lists such as Ontario (OINP), British Columbia (BC PNP), or Alberta (AAIP).`}
+                {noc.priorityCategory !== 'General Stream' && currentCategorySlug ? (
+                  <span>
+                    Designated under IRCC&apos;s{' '}
+                    <Link
+                      href={`/express-entry/${currentCategorySlug}`}
+                      className="text-emerald-400 font-bold underline hover:text-emerald-300 transition-colors"
+                    >
+                      {noc.priorityCategory} Stream →
+                    </Link>
+                    . Candidates with 6 months of qualifying Canadian or foreign experience in this NOC can receive Invitations to Apply (ITAs) at significantly lower CRS cutoff thresholds.
+                  </span>
+                ) : (
+                  <span>
+                    Currently evaluated under standard General and CEC invitation rounds, or targeted through provincial in-demand lists such as{' '}
+                    <Link href="/wages/ontario" className="text-cyan-400 hover:underline">Ontario (OINP)</Link>,{' '}
+                    <Link href="/wages/british-columbia" className="text-cyan-400 hover:underline">British Columbia (BC PNP)</Link>, or{' '}
+                    <Link href="/wages/alberta" className="text-cyan-400 hover:underline">Alberta (AAIP)</Link>.
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -622,7 +713,7 @@ export default async function NocDetailPage({ params }: PageProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60">
-                {noc.wages.national && (
+                {noc.wages.national && noc.wages.national.median && noc.wages.national.median !== 'N/A' && (
                   <tr className="bg-cyan-500/5 font-semibold">
                     <td className="py-3.5 text-cyan-300 font-mono">Canada (National Average)</td>
                     <td className="py-3.5 font-mono text-slate-400 text-right">{noc.wages.national.low || '—'}</td>
@@ -783,6 +874,15 @@ export default async function NocDetailPage({ params }: PageProps) {
           />
         </section>
 
+        {/* Section 7.5: Semantic Related Occupations Topic Cluster Grid */}
+        <RelatedNocs
+          currentCode={noc.code}
+          currentTeer={noc.teer}
+          broadCategory={noc.broadCategory}
+          priorityCategory={noc.priorityCategory}
+          title={noc.title}
+        />
+
         {/* Section 8: Core Tool Next Steps Conversion Card */}
         <section className="p-6 sm:p-8 rounded-2xl border border-cyan-500/20 bg-gradient-to-r from-cyan-950/30 via-slate-900/60 to-blue-950/30 backdrop-blur-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2">
@@ -793,7 +893,7 @@ export default async function NocDetailPage({ params }: PageProps) {
               Check Your Express Entry Score &amp; Latest Cutoffs
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl">
-              Calculate your exact Comprehensive Ranking System (CRS) score for NOC {noc.code} and check recent draw cutoffs to see if you qualify for category-based selection.
+              Calculate your exact Comprehensive Ranking System (CRS) score for NOC {noc.code}, explore your TEER {noc.teer} immigration pathways, and check recent draw cutoffs.
             </p>
           </div>
           <div className="flex flex-wrap sm:flex-nowrap gap-3 shrink-0 w-full md:w-auto">
@@ -809,8 +909,30 @@ export default async function NocDetailPage({ params }: PageProps) {
             >
               View Draw Trends →
             </Link>
+            <Link
+              href={`/teer/${noc.teer}`}
+              className="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-cyan-500/40 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 font-mono text-xs transition-colors"
+            >
+              TEER {noc.teer} Guide →
+            </Link>
           </div>
         </section>
+
+        {/* Data Attribution & Last Verified Footer */}
+        <section className="p-4 sm:p-5 rounded-xl border border-slate-800/60 bg-slate-900/20 flex flex-col sm:flex-row sm:items-center gap-3 text-[11px] font-mono text-slate-500">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+            <span>NOC data: <a href="https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">Statistics Canada NOC 2021 v1.0</a></span>
+          </div>
+          <span className="hidden sm:block text-slate-700">·</span>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+            <span>Wages: <a href="https://www.jobbank.gc.ca/trend-analysis/search-wages" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">ESDC Job Bank 2025/2026 Open Data</a></span>
+          </div>
+          <span className="hidden sm:block text-slate-700">·</span>
+          <span>Last verified: September 2026</span>
+        </section>
+
       </div>
 
       <Footer />

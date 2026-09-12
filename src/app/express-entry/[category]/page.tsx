@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AccordionFaq from '@/components/ui/AccordionFaq'
+import ImmigrationDisclaimer from '@/components/ui/ImmigrationDisclaimer'
 import Footer from '@/components/home/Footer'
 
 import allNocs from '@/data/allNocsDetail.json'
@@ -201,6 +202,9 @@ export default async function CategoryPage({ params }: PageProps) {
             { label: cat.shortLabel },
           ]}
         />
+
+        {/* Educational disclaimer — required for immigration-niche AdSense compliance */}
+        <ImmigrationDisclaimer />
 
         {/* Hero Card */}
         <div className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/40 p-6 sm:p-10 backdrop-blur-xl">
@@ -405,34 +409,62 @@ export default async function CategoryPage({ params }: PageProps) {
           </section>
         )}
 
-        {/* Action Pathways */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Action Pathways & Strategic Interlinks */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             href="/crs-calculator"
-            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-cyan-500/50 hover:bg-slate-900/60 transition-all group flex items-center justify-between"
+            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-cyan-500/50 hover:bg-slate-900/60 transition-all group flex flex-col justify-between space-y-3"
           >
             <div>
               <div className="text-xs font-mono text-cyan-400">CRS CALCULATOR</div>
               <div className="text-base font-bold text-white group-hover:text-cyan-300 mt-1">Calculate Your Points</div>
               <p className="text-xs text-slate-400 mt-1">See how close you are to the {cat.shortLabel} cutoff ({effectiveCrs}).</p>
             </div>
-            <svg className="w-5 h-5 text-cyan-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <span className="text-xs font-mono text-cyan-400 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Estimate Score →
+            </span>
+          </Link>
+
+          <Link
+            href="/express-entry-draws"
+            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-emerald-500/50 hover:bg-slate-900/60 transition-all group flex flex-col justify-between space-y-3"
+          >
+            <div>
+              <div className="text-xs font-mono text-emerald-400">DRAWS ARCHIVE</div>
+              <div className="text-base font-bold text-white group-hover:text-emerald-300 mt-1">All {cat.shortLabel} Draws</div>
+              <p className="text-xs text-slate-400 mt-1">Review invitation sizes and historical cutoff drops since 2023.</p>
+            </div>
+            <span className="text-xs font-mono text-emerald-400 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              View Draw Trends →
+            </span>
+          </Link>
+
+          <Link
+            href="/wages"
+            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-amber-500/50 hover:bg-slate-900/60 transition-all group flex flex-col justify-between space-y-3"
+          >
+            <div>
+              <div className="text-xs font-mono text-amber-400">PROVINCIAL SALARIES</div>
+              <div className="text-base font-bold text-white group-hover:text-amber-300 mt-1">Compare LMIA Wages</div>
+              <p className="text-xs text-slate-400 mt-1">Check prevailing wage medians across Ontario, BC, and Alberta.</p>
+            </div>
+            <span className="text-xs font-mono text-amber-400 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Check Salaries →
+            </span>
           </Link>
 
           <Link
             href="/express-entry"
-            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-purple-500/50 hover:bg-slate-900/60 transition-all group flex items-center justify-between"
+            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-purple-500/50 hover:bg-slate-900/60 transition-all group flex flex-col justify-between space-y-3"
           >
             <div>
-              <div className="text-xs font-mono text-purple-400">ALL CATEGORIES</div>
-              <div className="text-base font-bold text-white group-hover:text-purple-300 mt-1">Compare Other Streams</div>
+              <div className="text-xs font-mono text-purple-400">ALL 6 STREAMS</div>
+              <div className="text-base font-bold text-white group-hover:text-purple-300 mt-1">Compare Categories</div>
               <p className="text-xs text-slate-400 mt-1">Explore Healthcare, Trades, STEM, Transport &amp; French streams.</p>
             </div>
-            <svg className="w-5 h-5 text-purple-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <span className="text-xs font-mono text-purple-400 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Compare Streams →
+            </span>
           </Link>
         </div>
 

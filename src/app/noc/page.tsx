@@ -4,41 +4,56 @@ import Link from 'next/link'
 import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import NocDirectoryTable from '@/components/noc/NocDirectoryTable'
+import AllNocsIndex from '@/components/noc/AllNocsIndex'
 import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
 import searchIndexData from '@/data/searchIndex.json'
 import { getAlternates } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Canada NOC Directory: Search All 516 Occupations & TEER (2026)',
-  description:
-    'Search all 516 Canadian NOC 2021 codes. Verify TEER categories, Express Entry eligibility, Job Bank wages, and official job duties in one directory.',
-  alternates: getAlternates('/noc'),
-  openGraph: {
-    title: 'Canada NOC Directory: Search All 516 Occupations & TEER (2026)',
-    description: 'Search the complete directory of all 516 Canadian National Occupational Classification codes with our fast NOC code finder.',
-    url: 'https://canadanocguide.com/noc',
-    siteName: 'CanadaNOCGuide',
-    locale: 'en_CA',
-    type: 'website',
-    images: [
-      {
-        url: '/pr-card-3d.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Canada NOC Code Finder',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Canada NOC Directory: Search All 516 Occupations & TEER (2026)',
-    description: 'Search the complete directory of all 516 Canadian National Occupational Classification codes with our fast NOC code finder.',
-    images: ['/pr-card-3d.jpg'],
-  },
+interface NocPageProps {
+  searchParams: Promise<{ q?: string; teer?: string; category?: string }>
 }
 
-export default function NocDirectoryPage() {
+export async function generateMetadata({ searchParams }: NocPageProps): Promise<Metadata> {
+  const resolvedParams = await searchParams
+  const hasSearchQuery = !!(resolvedParams.q || resolvedParams.teer || resolvedParams.category)
+
+  return {
+    title: 'Canada NOC Directory: Search All 516 Occupations & TEER (2026)',
+    description:
+      'Search all 516 Canadian NOC 2021 codes. Verify TEER categories, Express Entry eligibility, Job Bank wages, and official job duties in one directory.',
+    alternates: getAlternates('/noc'),
+    robots: hasSearchQuery
+      ? { index: false, follow: true }
+      : { index: true, follow: true },
+    openGraph: {
+      title: 'Canada NOC Directory: Search All 516 Occupations & TEER (2026)',
+      description: 'Search the complete directory of all 516 Canadian National Occupational Classification codes with our fast NOC code finder.',
+      url: 'https://canadanocguide.com/noc',
+      siteName: 'CanadaNOCGuide',
+      locale: 'en_CA',
+      type: 'website',
+      images: [
+        {
+          url: '/pr-card-3d.jpg',
+          width: 1200,
+          height: 630,
+          alt: 'Canada NOC Code Finder',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Canada NOC Directory: Search All 516 Occupations & TEER (2026)',
+      description: 'Search the complete directory of all 516 Canadian National Occupational Classification codes with our fast NOC code finder.',
+      images: ['/pr-card-3d.jpg'],
+    },
+  }
+}
+
+export default async function NocDirectoryPage({ searchParams }: NocPageProps) {
+  const resolvedParams = await searchParams
+  const hasSearchQuery = !!(resolvedParams.q || resolvedParams.teer || resolvedParams.category)
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -423,6 +438,9 @@ export default function NocDirectoryPage() {
             <p className="text-xs text-slate-400 mt-1">Provincial prevailing wages required for LMIA work permits.</p>
           </Link>
         </div>
+
+        {/* Section 4: Complete Directory Index (All 516 NOC Codes) */}
+        <AllNocsIndex />
 
         {/* NOC Directory FAQ Section with Smooth +/- Accordion */}
         <section className="pt-4">

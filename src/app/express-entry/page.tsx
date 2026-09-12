@@ -317,33 +317,61 @@ export default function ExpressEntryHubPage() {
         </section>
 
         {/* Action Pathway Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             href="/crs-calculator"
-            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-cyan-500/50 hover:bg-slate-900/60 transition-all group flex items-center justify-between"
+            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-cyan-500/50 hover:bg-slate-900/60 transition-all group flex flex-col justify-between space-y-3"
           >
             <div>
               <div className="text-xs font-mono text-cyan-400">CRS CALCULATOR</div>
               <div className="text-base font-bold text-white group-hover:text-cyan-300 mt-1">Calculate Your Points</div>
               <p className="text-xs text-slate-400 mt-1">See how your score measures up against category cutoffs.</p>
             </div>
-            <svg className="w-5 h-5 text-cyan-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <span className="text-xs font-mono text-cyan-400 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Estimate Score →
+            </span>
+          </Link>
+
+          <Link
+            href="/express-entry-draws"
+            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-emerald-500/50 hover:bg-slate-900/60 transition-all group flex flex-col justify-between space-y-3"
+          >
+            <div>
+              <div className="text-xs font-mono text-emerald-400">DRAWS ARCHIVE</div>
+              <div className="text-base font-bold text-white group-hover:text-emerald-300 mt-1">Check Category Draws</div>
+              <p className="text-xs text-slate-400 mt-1">Track 442+ historical draws and cutoff drops across streams.</p>
+            </div>
+            <span className="text-xs font-mono text-emerald-400 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              View Draw Trends →
+            </span>
+          </Link>
+
+          <Link
+            href="/wages"
+            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-amber-500/50 hover:bg-slate-900/60 transition-all group flex flex-col justify-between space-y-3"
+          >
+            <div>
+              <div className="text-xs font-mono text-amber-400">PROVINCIAL SALARIES</div>
+              <div className="text-base font-bold text-white group-hover:text-amber-300 mt-1">LMIA Prevailing Wages</div>
+              <p className="text-xs text-slate-400 mt-1">Compare regional pay benchmarks across 13 provinces.</p>
+            </div>
+            <span className="text-xs font-mono text-amber-400 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Compare Salaries →
+            </span>
           </Link>
 
           <Link
             href="/noc"
-            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-emerald-500/50 hover:bg-slate-900/60 transition-all group flex items-center justify-between"
+            className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-purple-500/50 hover:bg-slate-900/60 transition-all group flex flex-col justify-between space-y-3"
           >
             <div>
-              <div className="text-xs font-mono text-emerald-400">NOC DIRECTORY</div>
-              <div className="text-base font-bold text-white group-hover:text-emerald-300 mt-1">Look Up Your NOC Code</div>
+              <div className="text-xs font-mono text-purple-400">NOC DIRECTORY</div>
+              <div className="text-base font-bold text-white group-hover:text-purple-300 mt-1">Look Up Your NOC Code</div>
               <p className="text-xs text-slate-400 mt-1">Verify if your occupation is listed in priority categories.</p>
             </div>
-            <svg className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <span className="text-xs font-mono text-purple-400 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Search All 516 NOCs →
+            </span>
           </Link>
         </div>
 

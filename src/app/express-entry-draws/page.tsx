@@ -190,10 +190,13 @@ export default function ExpressEntryDrawsPage() {
               <div className="text-xs font-mono text-cyan-400 uppercase">Stream 01</div>
               <h3 className="text-base font-semibold text-white">General &amp; CEC Draws</h3>
               <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                Invites all eligible candidates regardless of occupation. Because the pool has many Canadian master&apos;s graduates with Canadian work experience, cutoffs remain high (510–535+ points).
+                Evaluates candidates across all NOC codes solely on CRS score ranking. Cutoffs typically fluctuate between 510 and 535 points depending on pool competition. Use our{' '}
+                <Link href="/crs-calculator" className="text-cyan-400 underline hover:text-cyan-300">
+                  CRS Points Calculator →
+                </Link>
               </p>
               <div className="text-[11px] text-slate-500 pt-2 border-t border-slate-900">
-                Best for: Candidates with Canadian degrees + Canadian job experience
+                Programs: FSWP, CEC, FSTP
               </div>
             </div>
 
@@ -202,7 +205,13 @@ export default function ExpressEntryDrawsPage() {
               <div className="text-xs font-mono text-emerald-400 uppercase">Stream 02</div>
               <h3 className="text-base font-semibold text-white">Category-Based Selection</h3>
               <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                Targets specific occupations with acute Canadian shortages (STEM, Healthcare, Trades, Transport, Agriculture). Cutoffs are 40 to 80 points lower than general draws.
+                Targets specific occupations with acute Canadian shortages ({' '}
+                <Link href="/express-entry/stem" className="text-cyan-400 underline hover:text-cyan-300 font-medium">STEM</Link>,{' '}
+                <Link href="/express-entry/healthcare" className="text-emerald-400 underline hover:text-emerald-300 font-medium">Healthcare</Link>,{' '}
+                <Link href="/express-entry/trades" className="text-amber-400 underline hover:text-amber-300 font-medium">Trades</Link>,{' '}
+                <Link href="/express-entry/transport" className="text-blue-400 underline hover:text-blue-300 font-medium">Transport</Link>,{' '}
+                <Link href="/express-entry/agriculture" className="text-lime-400 underline hover:text-lime-300 font-medium">Agriculture</Link>
+                ). Cutoffs are 40 to 80 points lower than general draws.
               </p>
               <div className="text-[11px] text-slate-500 pt-2 border-t border-slate-900">
                 Requirement: 6 months continuous experience in designated NOC code
@@ -214,7 +223,11 @@ export default function ExpressEntryDrawsPage() {
               <div className="text-xs font-mono text-purple-400 uppercase">Stream 03</div>
               <h3 className="text-base font-semibold text-white">French Language Category</h3>
               <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                Canada has a constitutional mandate to promote Francophone immigration outside Quebec. Candidates with NCLC 7 in French regularly receive ITAs with scores under 400.
+                Canada has a constitutional mandate to promote Francophone immigration outside Quebec. Candidates with NCLC 7 in French regularly receive ITAs through the{' '}
+                <Link href="/express-entry/french" className="text-purple-400 underline hover:text-purple-300 font-medium">
+                  French Language Stream →
+                </Link>{' '}
+                with scores under 400.
               </p>
               <div className="text-[11px] text-slate-500 pt-2 border-t border-slate-900">
                 Test required: TEF Canada or TCF Canada (Level 7 in all 4 bands)

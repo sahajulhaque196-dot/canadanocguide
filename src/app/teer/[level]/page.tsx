@@ -665,6 +665,36 @@ export default async function TeerDetailPage({ params }: PageProps) {
           />
         </section>
 
+        {/* Other TEER Levels Navigation Mesh */}
+        <section className="p-6 rounded-2xl border border-slate-800 bg-slate-950/60 space-y-3">
+          <span className="text-xs font-mono uppercase tracking-wider text-slate-400 block">
+            Explore All 6 TEER Categories in Canada NOC 2021
+          </span>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            {[
+              { lvl: '0', label: 'TEER 0', sub: 'Management' },
+              { lvl: '1', label: 'TEER 1', sub: 'Degree' },
+              { lvl: '2', label: 'TEER 2', sub: 'College/Trade' },
+              { lvl: '3', label: 'TEER 3', sub: 'Technical' },
+              { lvl: '4', label: 'TEER 4', sub: 'Semi-Skilled' },
+              { lvl: '5', label: 'TEER 5', sub: 'Entry-Level' },
+            ].map((t) => (
+              <Link
+                key={t.lvl}
+                href={`/teer/${t.lvl}`}
+                className={`p-3 rounded-xl border text-center transition-all ${
+                  t.lvl === String(teer.level)
+                    ? 'border-cyan-500 bg-cyan-950/30 text-cyan-300 font-bold'
+                    : 'border-slate-800 bg-slate-900/50 text-slate-400 hover:text-white hover:border-slate-700'
+                }`}
+              >
+                <div className="font-mono text-sm font-bold">{t.label}</div>
+                <div className="text-[10px] text-slate-500 truncate">{t.sub}</div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
       </div>
 
       <Footer />

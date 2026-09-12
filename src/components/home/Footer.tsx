@@ -134,7 +134,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/terms" className="hover:text-cyan-400 transition-colors">
-                  Terms of Use &amp; Disclaimer
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
+                <Link href="/disclaimer" className="hover:text-cyan-400 transition-colors">
+                  Legal Disclaimer (IRPA §91)
                 </Link>
               </li>
             </ul>
@@ -166,6 +171,171 @@ export default function Footer() {
             </ul>
           </div>
 
+        </div>
+
+        {/* Deep Topic Silo & Internal Linking Matrix */}
+        <div className="pt-8 border-t border-slate-850 space-y-6">
+          <div className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold">
+            Canadian Immigration &amp; Labour Market Directory Index
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 text-xs text-slate-400">
+            {/* Silo 1: Express Entry Categories */}
+            <div className="space-y-2">
+              <span className="font-mono text-[11px] font-bold text-white uppercase tracking-wider block text-cyan-400">
+                Express Entry Categories
+              </span>
+              <ul className="space-y-1.5">
+                <li>
+                  <Link href="/express-entry/stem" className="hover:text-cyan-300 transition-colors">
+                    STEM Category Occupations
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/express-entry/healthcare" className="hover:text-cyan-300 transition-colors">
+                    Healthcare Stream NOCs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/express-entry/trades" className="hover:text-cyan-300 transition-colors">
+                    Trade Occupations (Red Seal)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/express-entry/transport" className="hover:text-cyan-300 transition-colors">
+                    Transport &amp; Trucking NOCs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/express-entry/agriculture" className="hover:text-cyan-300 transition-colors">
+                    Agriculture &amp; Agri-Food
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/express-entry/french" className="hover:text-cyan-300 transition-colors">
+                    French Language Proficiency
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Silo 2: TEER Classification */}
+            <div className="space-y-2">
+              <span className="font-mono text-[11px] font-bold text-white uppercase tracking-wider block text-emerald-400">
+                TEER Classification Matrix
+              </span>
+              <ul className="space-y-1.5">
+                <li>
+                  <Link href="/teer/0" className="hover:text-emerald-300 transition-colors">
+                    TEER 0: Management Jobs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/teer/1" className="hover:text-emerald-300 transition-colors">
+                    TEER 1: University Degree
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/teer/2" className="hover:text-emerald-300 transition-colors">
+                    TEER 2: College &amp; Apprenticeship
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/teer/3" className="hover:text-emerald-300 transition-colors">
+                    TEER 3: Intermediate Technical
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/teer/4" className="hover:text-emerald-300 transition-colors">
+                    TEER 4: Semi-Skilled &amp; PNP
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/teer/5" className="hover:text-emerald-300 transition-colors">
+                    TEER 5: Entry-Level Roles
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Silo 3: Provincial Wages & LMIA */}
+            <div className="space-y-2">
+              <span className="font-mono text-[11px] font-bold text-white uppercase tracking-wider block text-purple-400">
+                Provincial Wages &amp; LMIA
+              </span>
+              <ul className="space-y-1.5">
+                <li>
+                  <Link href="/wages/ontario" className="hover:text-purple-300 transition-colors">
+                    Ontario Wage Rates &amp; OINP
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/wages/british-columbia" className="hover:text-purple-300 transition-colors">
+                    British Columbia (BC PNP)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/wages/alberta" className="hover:text-purple-300 transition-colors">
+                    Alberta (AAIP) Benchmarks
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/wages/quebec" className="hover:text-purple-300 transition-colors">
+                    Quebec Prevailing Wages
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/wages/nova-scotia" className="hover:text-purple-300 transition-colors">
+                    Nova Scotia &amp; AIP Streams
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/wages/saskatchewan" className="hover:text-purple-300 transition-colors">
+                    Saskatchewan (SINP) Wages
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Silo 4: Core Calculators & Tools */}
+            <div className="space-y-2">
+              <span className="font-mono text-[11px] font-bold text-white uppercase tracking-wider block text-amber-400">
+                Immigration Tools
+              </span>
+              <ul className="space-y-1.5">
+                <li>
+                  <Link href="/crs-calculator" className="hover:text-amber-300 transition-colors">
+                    CRS Score Calculator (2026)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/express-entry-draws" className="hover:text-amber-300 transition-colors">
+                    Express Entry Draws (442 Rounds)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/noc-converter" className="hover:text-amber-300 transition-colors">
+                    4-Digit to 5-Digit Converter
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/noc" className="hover:text-amber-300 transition-colors">
+                    516 NOC Code Finder
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/wages" className="hover:text-amber-300 transition-colors">
+                    All 13 Provincial Wage Grids
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/teer" className="hover:text-amber-300 transition-colors">
+                    TEER System Overview (0–5)
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         {/* Bottom Copyright Bar */}

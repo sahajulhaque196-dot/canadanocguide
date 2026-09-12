@@ -18,6 +18,30 @@ export const metadata: Metadata = {
   description:
     'Free Canada NOC code finder indexing all 516 NOC codes (2021 list). Check your TEER categories, track Express Entry draws (2026), and compare Job Bank wages.',
   alternates: getAlternates('/'),
+  openGraph: {
+    title: 'Canada NOC Code Finder (2026): 516 NOC Codes & TEER',
+    description:
+      'Free Canada NOC code finder indexing all 516 NOC codes (2021 list). Check your TEER categories, track Express Entry draws (2026), and compare Job Bank wages.',
+    url: 'https://canadanocguide.com',
+    siteName: 'CanadaNOCGuide',
+    locale: 'en_CA',
+    type: 'website',
+    images: [
+      {
+        url: '/pr-card-3d.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Canada NOC Code Finder & TEER Categories',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Canada NOC Code Finder (2026): 516 NOC Codes & TEER',
+    description:
+      'Free Canada NOC code finder indexing all 516 NOC codes (2021 list). Check your TEER categories, track Express Entry draws (2026), and compare Job Bank wages.',
+    images: ['/pr-card-3d.jpg'],
+  },
 }
 
 export default function HomePage() {

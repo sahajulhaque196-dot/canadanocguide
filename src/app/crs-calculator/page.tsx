@@ -5,18 +5,19 @@ import HeaderNav from '@/components/home/HeaderNav'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import CrsCalculator from '@/components/calculator/CrsCalculator'
 import AccordionFaq from '@/components/ui/AccordionFaq'
+import ImmigrationDisclaimer from '@/components/ui/ImmigrationDisclaimer'
 import Footer from '@/components/home/Footer'
 import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
-  title: 'CRS Calculator (2026): Calculate Canada Express Entry Points',
+  title: 'CRS Calculator (2026): Estimate Your Canada Express Entry Points',
   description:
-    'Calculate your official Canada Express Entry CRS score (2026). Check points for age, education, language CLB, work experience, and get instant boosters.',
+    'Estimate your Canada Express Entry CRS score for free (2026). Check points for age, education, language CLB, work experience, and discover score boosters.',
   alternates: getAlternates('/crs-calculator'),
   openGraph: {
-    title: 'Canada Express Entry CRS Calculator (2026) | Real-Time Points',
+    title: 'Canada Express Entry CRS Score Calculator (2026)',
     description:
-      'Official Comprehensive Ranking System (CRS) calculator. Check your score against real draw cutoffs and discover actionable point boosters.',
+      'Free Comprehensive Ranking System (CRS) estimator. Check your score against recent draw cutoffs and discover actionable point boosters.',
     url: 'https://canadanocguide.com/crs-calculator',
     siteName: 'CanadaNOCGuide',
     locale: 'en_CA',
@@ -32,8 +33,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Canada Express Entry CRS Points Calculator (2026)',
-    description: 'Calculate your official CRS points and benchmark against latest draw cutoffs.',
+    title: 'Canada Express Entry CRS Score Estimator (2026)',
+    description: 'Estimate your CRS points and compare against latest draw cutoffs.',
     images: ['/pr-card-3d.jpg'],
   },
 }
@@ -158,6 +159,9 @@ export default function CrsCalculatorPage() {
           ]}
         />
 
+        {/* Educational disclaimer — required for immigration-niche AdSense compliance */}
+        <ImmigrationDisclaimer />
+
         {/* Master Header Card */}
         <div className="relative rounded-3xl border border-slate-800 bg-slate-900/40 p-6 sm:p-10 backdrop-blur-xl overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -165,7 +169,7 @@ export default function CrsCalculatorPage() {
           <div className="relative space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-mono uppercase tracking-wider">
               <span>🇨🇦</span>
-              <span>Official IRCC Criteria (1,200 Points Grid)</span>
+              <span>Based on IRCC Criteria (1,200 Points Grid)</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">

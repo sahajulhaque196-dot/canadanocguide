@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import GlobalBackground from '@/components/ui/GlobalBackground'
 import CookieBanner from '@/components/ui/CookieBanner'
@@ -7,8 +8,15 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space' })
 
+const adsensePubId = process.env.NEXT_PUBLIC_ADSENSE_PUB_ID || ''
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://canadanocguide.com'),
+  ...(adsensePubId ? {
+    other: {
+      'google-adsense-account': adsensePubId,
+    },
+  } : {}),
   title: 'Canada NOC Guide: Find Your NOC Code, TEER & Wages (2026)',
   description:
     'Find your NOC code, check Express Entry eligibility, compare wages by province, and explore all 516 NOC unit groups. IRCC & ESDC 2025/2026 verified data.',
@@ -67,9 +75,9 @@ const websiteSchema = {
       logo: {
         '@type': 'ImageObject',
         '@id': 'https://canadanocguide.com/#logo',
-        url: 'https://canadanocguide.com/pr-card-3d.jpg',
-        width: 1200,
-        height: 630,
+        url: 'https://canadanocguide.com/logo.png',
+        width: 400,
+        height: 80,
         caption: 'Canada NOC Guide',
       },
       sameAs: [
@@ -113,6 +121,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </div>
         <CookieBanner />
+        {adsensePubId && (
+          <Script
+            id="google-adsense-script"
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePubId}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   )

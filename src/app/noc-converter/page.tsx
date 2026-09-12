@@ -9,7 +9,7 @@ import NocConverterTool from '@/components/noc/NocConverterTool'
 import { getAlternates } from '@/lib/seo'
 
 export const metadata: Metadata = {
-  title: 'NOC 2016 to NOC 2021 Converter: 4-Digit to 5-Digit Lookup Tool (2026)',
+  title: 'NOC 2016 to 2021 Converter: 4-Digit to 5-Digit Lookup (2026)',
   description: 'Convert any 4-digit NOC 2016 code to the new 5-digit NOC 2021 TEER code. Free official Statistics Canada concordance lookup for Express Entry & PR applicants.',
   alternates: getAlternates('/noc-converter'),
   openGraph: {
@@ -63,7 +63,7 @@ export default function NocConverterPage() {
     '@type': 'WebApplication',
     name: 'Canada NOC 2016 to 2021 Code Converter',
     url: 'https://canadanocguide.com/noc-converter',
-    applicationCategory: 'UtilityApplication',
+    applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'All',
     offers: {
       '@type': 'Offer',

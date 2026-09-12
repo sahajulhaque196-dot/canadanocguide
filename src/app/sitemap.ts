@@ -3,15 +3,17 @@ import allNocs from '@/data/allNocsDetail.json'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://canadanocguide.com'
-  const now = new Date()
+  // Use stable dates — update these only when the page content actually changes
   const nocReferenceDate = new Date('2026-09-01')
+  // Express Entry draws updates are frequent; use a recent stable date
+  const drawsUpdatedDate = new Date('2026-09-10')
 
   // 1. Core Pages & Hubs
   const corePages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: now,
-      changeFrequency: 'daily',
+      lastModified: nocReferenceDate,
+      changeFrequency: 'weekly',
       priority: 1.0,
     },
     {
@@ -28,8 +30,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/express-entry-draws`,
-      lastModified: now,
-      changeFrequency: 'daily',
+      lastModified: drawsUpdatedDate,
+      changeFrequency: 'weekly',
       priority: 0.95,
     },
     {
@@ -76,6 +78,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/terms`,
+      lastModified: nocReferenceDate,
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/disclaimer`,
       lastModified: nocReferenceDate,
       changeFrequency: 'monthly',
       priority: 0.4,
