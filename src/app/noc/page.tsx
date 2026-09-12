@@ -9,6 +9,7 @@ import AccordionFaq from '@/components/ui/AccordionFaq'
 import Footer from '@/components/home/Footer'
 import searchIndexData from '@/data/searchIndex.json'
 import { getAlternates } from '@/lib/seo'
+export const runtime = 'edge'
 
 interface NocPageProps {
   searchParams: Promise<{ q?: string; teer?: string; category?: string }>
