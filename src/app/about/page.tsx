@@ -49,8 +49,10 @@ export default function AboutPage() {
       url: 'https://canadanocguide.com',
       founder: {
         '@type': 'Person',
+        '@id': 'https://canadanocguide.com/#author',
         name: 'Sahajul Haque',
         jobTitle: 'Founder & Data Architect',
+        url: 'https://x.com/saddamh58509953',
       },
     },
   }

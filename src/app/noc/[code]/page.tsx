@@ -98,7 +98,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   // Concise meta description (under 155 chars) preventing SERP snippet truncation
   const shortDescTitle = noc.title.length > 30 ? `${noc.title.slice(0, 27).trim()}...` : noc.title
-  const description = `NOC ${noc.code} (${shortDescTitle}): TEER ${noc.teer} Express Entry rules, duties checklist, and 2026 Job Bank wages (${wageText}).${formerCodes}`
+  const rawDesc = `NOC ${noc.code} (${shortDescTitle}): TEER ${noc.teer} Express Entry rules, duties, and 2026 Job Bank wages (${wageText}).${formerCodes}`
+  const description = rawDesc.length > 158 ? `${rawDesc.slice(0, 155).trim()}...` : rawDesc
 
   return {
     title: cleanTitle,
@@ -238,66 +239,119 @@ export default async function NocDetailPage({ params }: PageProps) {
     ]
   }
 
-  // 3. FAQPage Schema for High CTR Rich Results in Google SERP
-  const formerFaq = (noc.formerNoc2016 && noc.formerNoc2016.length > 0)
-    ? [
-        {
-          '@type': 'Question',
-          name: `What was the NOC 2016 code for NOC ${noc.code} (${noc.title})?`,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: `Under Canada's previous NOC 2016 classification, ${noc.title} was categorized under NOC ${noc.formerNoc2016.map(f => `${f.code} (${f.title})`).join(' and ')}. In NOC 2021, it transitioned to NOC ${noc.code} under TEER ${noc.teer}.`,
-          },
-        },
-      ]
-    : []
+  // 3. Unified FAQ Data Structure (Exact 1:1 match between on-page UI and JSON-LD schema)
+  const availableCities = noc.cityWages ? Object.entries(noc.cityWages) : []
+  const cityFaqItem = availableCities.length > 0 ? {
+    id: 'city-wage-faq',
+    question: `What are the prevailing wages for NOC ${noc.code} across major Canadian cities?`,
+    plainTextAnswer: `According to official ESDC Job Bank benchmarks, the prevailing median rate for NOC ${noc.code} (${noc.title}) is ` +
+      availableCities.slice(0, 5).map(([city, w]) => `$${w.median}${w.isAnnual ? '/yr' : '/hr'} in ${city}`).join(', ') + '.',
+    answer: (
+      <span>
+        According to official ESDC Job Bank benchmarks, the prevailing median rate for{' '}
+        <strong className="text-white font-semibold">NOC {noc.code}</strong> is{' '}
+        {availableCities.slice(0, 5).map(([city, w], idx) => (
+          <span key={city}>
+            {idx > 0 ? ', ' : ''}
+            <strong className="text-emerald-400">${w.median}{w.isAnnual ? '/yr' : '/hr'}</strong> in {city}
+          </span>
+        ))}.
+      </span>
+    ),
+    defaultOpen: false,
+  } : null
 
-  const cityFaq = (noc.cityWages && Object.keys(noc.cityWages).length > 0)
-    ? [
-        {
-          '@type': 'Question',
-          name: `What is the prevailing wage for NOC ${noc.code} in Toronto, Vancouver, and Calgary?`,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: `According to ESDC Job Bank data, the median wage for NOC ${noc.code} (${noc.title}) is ${noc.cityWages['Toronto'] ? `$${noc.cityWages['Toronto'].median}/hr in Toronto` : ''}${noc.cityWages['Vancouver'] ? `, $${noc.cityWages['Vancouver'].median}/hr in Vancouver` : ''}${noc.cityWages['Calgary'] ? `, and $${noc.cityWages['Calgary'].median}/hr in Calgary` : ''}.`,
-          },
-        },
-      ]
-    : []
+  const streamFaqItem = noc.priorityCategory === 'Healthcare Priority'
+    ? {
+        id: 'licensing-faq',
+        question: `Do I need a Canadian license before receiving an Express Entry ITA for NOC ${noc.code}?`,
+        plainTextAnswer: `No. You do not need a provincial medical or nursing license just to submit your Express Entry profile or receive an Invitation to Apply (ITA). However, you must complete foreign credential evaluation (ECA) and will need licensing after landing in Canada to practice clinically.`,
+        answer: `No. You do not need a provincial medical or nursing license just to submit your Express Entry profile or receive an Invitation to Apply (ITA). However, you must complete foreign credential evaluation (ECA) and will need licensing after landing in Canada to practice clinically.`,
+        defaultOpen: false,
+      }
+    : noc.priorityCategory === 'STEM Priority'
+    ? {
+        id: 'tech-licensing-faq',
+        question: `Do tech workers under NOC ${noc.code} require professional engineering (P.Eng) registration?`,
+        plainTextAnswer: `Generally no. While provincial associations (like PEO in Ontario or EGBC in British Columbia) protect the title 'Engineer', IRCC evaluates immigration eligibility based on your actual job duties and university degrees rather than provincial P.Eng licensure.`,
+        answer: `Generally no. While provincial associations (like PEO in Ontario or EGBC in British Columbia) protect the title 'Engineer', IRCC evaluates immigration eligibility based on your actual job duties and university degrees rather than provincial P.Eng licensure.`,
+        defaultOpen: false,
+      }
+    : noc.priorityCategory === 'Trade Occupations'
+    ? {
+        id: 'trades-faq',
+        question: `Does NOC ${noc.code} qualify for the 50 CRS points Red Seal bonus?`,
+        plainTextAnswer: `Yes. If you obtain a provincial Certificate of Qualification or Red Seal endorsement in an eligible trade, you receive +50 points under the Comprehensive Ranking System (CRS) skill transferability matrix.`,
+        answer: `Yes. If you obtain a provincial Certificate of Qualification or Red Seal endorsement in an eligible trade, you receive +50 points under the Comprehensive Ranking System (CRS) skill transferability matrix.`,
+        defaultOpen: false,
+      }
+    : noc.teer >= 4
+    ? {
+        id: 'pnp-pathway-faq',
+        question: `What is the best PR pathway for NOC ${noc.code} since it is TEER ${noc.teer}?`,
+        plainTextAnswer: `Because TEER ${noc.teer} is not eligible for direct Express Entry, your best routes are employer-supported Provincial Nominee Program (PNP) semi-skilled streams (such as SINP in Saskatchewan, AAIP in Alberta, or MPNP in Manitoba) or federal pilot programs like the Agri-Food Pilot.`,
+        answer: `Because TEER ${noc.teer} is not eligible for direct Express Entry, your best routes are employer-supported Provincial Nominee Program (PNP) semi-skilled streams (such as SINP in Saskatchewan, AAIP in Alberta, or MPNP in Manitoba) or federal pilot programs like the Agri-Food Pilot.`,
+        defaultOpen: false,
+      }
+    : null
+
+  const formerFaqItem = (noc.formerNoc2016 && noc.formerNoc2016.length > 0)
+    ? {
+        id: 'former-2016-faq',
+        question: `What was the NOC 2016 code for ${noc.title}?`,
+        plainTextAnswer: `Under Canada's previous NOC 2016 classification, ${noc.title} was categorized under NOC ${noc.formerNoc2016.map(f => `${f.code} (${f.title})`).join(' and ')}. In NOC 2021, it transitioned to NOC ${noc.code} under TEER ${noc.teer}.`,
+        answer: `Under Canada's previous NOC 2016 classification, ${noc.title} was categorized under NOC ${noc.formerNoc2016.map(f => `${f.code} (${f.title})`).join(' and ')}. In NOC 2021, it transitioned to NOC ${noc.code} under TEER ${noc.teer}.`,
+        defaultOpen: false,
+      }
+    : null
+
+  const nocFaqList = [
+    {
+      id: 'ee-eligibility',
+      question: `Is NOC ${noc.code} eligible for Canada Express Entry?`,
+      plainTextAnswer: noc.isEEEligible
+        ? `Yes. Because NOC ${noc.code} is classified as TEER ${noc.teer}, it qualifies for the Federal Skilled Worker Program (FSW) and Canadian Experience Class (CEC) under Express Entry.`
+        : `NOC ${noc.code} is in TEER ${noc.teer}, which is not directly eligible for standard Express Entry pools. However, you can apply through Provincial Nominee Program (PNP) semi-skilled streams or employer-sponsored work permits.`,
+      answer: noc.isEEEligible
+        ? `Yes. Because NOC ${noc.code} is classified as TEER ${noc.teer}, it qualifies for the Federal Skilled Worker Program (FSW) and Canadian Experience Class (CEC) under Express Entry.`
+        : `NOC ${noc.code} is in TEER ${noc.teer}, which is not directly eligible for standard Express Entry pools. However, you can apply through Provincial Nominee Program (PNP) semi-skilled streams or employer-sponsored work permits.`,
+      defaultOpen: true,
+    },
+    {
+      id: 'lmia-wage',
+      question: `What wage must my employer pay me for NOC ${noc.code}?`,
+      plainTextAnswer: `For an LMIA work permit, your employer must offer at least the median wage of ${rawWage} (or the prevailing median rate in your specific Canadian province of employment).`,
+      answer: (
+        <span>
+          For an LMIA work permit, your employer must offer at least the median wage of{' '}
+          <strong className="text-emerald-400">{rawWage}</strong> (or the prevailing median rate in your specific Canadian province of employment).
+        </span>
+      ),
+      defaultOpen: false,
+    },
+    {
+      id: 'duties-match',
+      question: `How many duties must match for my immigration reference letter?`,
+      plainTextAnswer: `Under Section 75(2) of the Immigration and Refugee Protection Regulations (IRPR), your employment reference letter must confirm you perform the actions in the lead statement and a substantial number (recommended at least 60%) of the official main duties listed above. You do not need to perform 100% of the duties.`,
+      answer: `Under Section 75(2) of the Immigration and Refugee Protection Regulations (IRPR), your employment reference letter must confirm you perform the actions in the lead statement and a substantial number (recommended at least 60%) of the official main duties listed above. You do not need to perform 100% of the duties.`,
+      defaultOpen: false,
+    },
+    ...(formerFaqItem ? [formerFaqItem] : []),
+    ...(cityFaqItem ? [cityFaqItem] : []),
+    ...(streamFaqItem ? [streamFaqItem] : []),
+  ]
 
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `Is NOC ${noc.code} eligible for Canada Express Entry?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: noc.isEEEligible
-            ? `Yes. Because NOC ${noc.code} is classified as TEER ${noc.teer}, it qualifies for the Federal Skilled Worker Program (FSW) and Canadian Experience Class (CEC) under Express Entry.`
-            : `NOC ${noc.code} is in TEER ${noc.teer}, which is not directly eligible for standard Express Entry pools. However, you can apply through Provincial Nominee Program (PNP) semi-skilled streams or employer-sponsored work permits.`,
-        },
+    mainEntity: nocFaqList.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.plainTextAnswer,
       },
-      {
-        '@type': 'Question',
-        name: `What wage must my employer pay me for NOC ${noc.code}?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `For an LMIA work permit, your employer must offer at least the median wage of ${rawWage} (or the prevailing median rate in your specific Canadian province of employment).`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `How many duties must match for my immigration reference letter?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `Under Section 75(2) of the Immigration and Refugee Protection Regulations (IRPR), your employment reference letter must confirm you perform the actions in the lead statement and a substantial number (recommended at least 60%) of the official main duties listed.`,
-        },
-      },
-      ...formerFaq,
-      ...cityFaq,
-    ],
+    })),
   }
 
   return (
@@ -725,81 +779,7 @@ export default async function NocDetailPage({ params }: PageProps) {
             title={`Frequently Asked Questions for NOC ${noc.code} (${noc.title})`}
             subtitle="Essential answers regarding Express Entry eligibility, LMIA prevailing wage compliance, and official reference letter rules."
             includeSchema={false}
-            items={[
-              {
-                id: 'ee-eligibility',
-                question: `Is NOC ${noc.code} eligible for Canada Express Entry?`,
-                answer: noc.isEEEligible
-                  ? `Yes. Because NOC ${noc.code} is classified as TEER ${noc.teer}, it qualifies for the Federal Skilled Worker Program (FSW) and Canadian Experience Class (CEC) under Express Entry.`
-                  : `NOC ${noc.code} is in TEER ${noc.teer}, which is not directly eligible for standard Express Entry pools. However, you can apply through Provincial Nominee Program (PNP) semi-skilled streams or employer-sponsored work permits.`,
-                defaultOpen: true,
-              },
-              {
-                id: 'lmia-wage',
-                question: `What wage must my employer pay me for NOC ${noc.code}?`,
-                plainTextAnswer: `For an LMIA work permit, your employer must offer at least the median wage of ${rawWage} (or the prevailing median rate in your specific Canadian province of employment).`,
-                answer: (
-                  <span>
-                    For an LMIA work permit, your employer must offer at least the median wage of{' '}
-                    <strong className="text-emerald-400">{rawWage}</strong> (or the prevailing median rate in your specific Canadian province of employment).
-                  </span>
-                ),
-                defaultOpen: false,
-              },
-              {
-                id: 'duties-match',
-                question: `How many duties must match for my immigration reference letter?`,
-                answer: `Under Section 75(2) of the Immigration and Refugee Protection Regulations (IRPR), your employment reference letter must confirm you perform the actions in the lead statement and a substantial number (recommended at least 60%) of the official main duties listed above. You do not need to perform 100% of the duties.`,
-                defaultOpen: false,
-              },
-              ...(noc.formerNoc2016 && noc.formerNoc2016.length > 0
-                ? [
-                    {
-                      id: 'former-2016-faq',
-                      question: `What was the NOC 2016 code for ${noc.title}?`,
-                      answer: `Under Canada's previous NOC 2016 classification, ${noc.title} was categorized under NOC ${noc.formerNoc2016.map(f => `${f.code} (${f.title})`).join(' and ')}. In NOC 2021, it officially transitioned to NOC ${noc.code} under TEER ${noc.teer}.`,
-                      defaultOpen: false,
-                    },
-                  ]
-                : []),
-              ...(noc.priorityCategory === 'Healthcare Priority'
-                ? [
-                    {
-                      id: 'licensing-faq',
-                      question: `Do I need a Canadian license before receiving an Express Entry ITA for NOC ${noc.code}?`,
-                      answer: `No. You do not need a provincial medical or nursing license just to submit your Express Entry profile or receive an Invitation to Apply (ITA). However, you must complete foreign credential evaluation (ECA) and will need licensing after landing in Canada to practice clinically.`,
-                      defaultOpen: false,
-                    },
-                  ]
-                : noc.priorityCategory === 'STEM Priority'
-                ? [
-                    {
-                      id: 'tech-licensing-faq',
-                      question: `Do tech workers under NOC ${noc.code} require professional engineering (P.Eng) registration?`,
-                      answer: `Generally no. While provincial associations (like PEO in Ontario or EGBC in British Columbia) protect the title 'Engineer', IRCC evaluates immigration eligibility based on your actual job duties and university degrees rather than provincial P.Eng licensure.`,
-                      defaultOpen: false,
-                    },
-                  ]
-                : noc.priorityCategory === 'Trade Occupations'
-                ? [
-                    {
-                      id: 'trades-faq',
-                      question: `Does NOC ${noc.code} qualify for the 50 CRS points Red Seal bonus?`,
-                      answer: `Yes. If you obtain a provincial Certificate of Qualification or Red Seal endorsement in an eligible trade, you receive +50 points under the Comprehensive Ranking System (CRS) skill transferability matrix.`,
-                      defaultOpen: false,
-                    },
-                  ]
-                : noc.teer >= 4
-                ? [
-                    {
-                      id: 'pnp-pathway-faq',
-                      question: `What is the best PR pathway for NOC ${noc.code} since it is TEER ${noc.teer}?`,
-                      answer: `Because TEER ${noc.teer} is not eligible for direct Express Entry, your best routes are employer-supported Provincial Nominee Program (PNP) semi-skilled streams (such as SINP in Saskatchewan, AAIP in Alberta, or MPNP in Manitoba) or federal pilot programs like the Agri-Food Pilot.`,
-                      defaultOpen: false,
-                    },
-                  ]
-                : []),
-            ]}
+            items={nocFaqList}
           />
         </section>
 

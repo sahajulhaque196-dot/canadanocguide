@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
-import concordanceData from '@/data/nocConcordance.json'
 
 interface ConcordanceItem {
   code2016: string
@@ -46,7 +45,20 @@ export default function NocConverterTool() {
   const [page, setPage] = useState(1)
   const pageSize = 15
 
-  const items = concordanceData.concordanceList as ConcordanceItem[]
+  const [items, setItems] = useState<ConcordanceItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    import('@/data/nocConcordance.json')
+      .then((mod) => {
+        setItems(((mod.default as { concordanceList?: ConcordanceItem[] }).concordanceList) || [])
+        setIsLoading(false)
+      })
+      .catch((err) => {
+        console.error('Failed to load concordance data:', err)
+        setIsLoading(false)
+      })
+  }, [])
 
   // Quick preset queries for high-volume searches
   const POPULAR_CONVERSIONS = [
@@ -290,7 +302,14 @@ export default function NocConverterTool() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
-              {paginatedItems.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5} className="py-16 text-center text-slate-400 font-mono text-xs">
+                    <div className="w-6 h-6 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin mx-auto mb-3" />
+                    Loading official concordance database...
+                  </td>
+                </tr>
+              ) : paginatedItems.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-slate-400 font-mono text-xs">
                     No conversion records found matching &ldquo;{query}&rdquo;.

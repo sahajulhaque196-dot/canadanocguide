@@ -227,8 +227,17 @@ const topologySource = `<!DOCTYPE html>
         window.addEventListener('resize', resize);
         resize();
 
+        let isTabActive = !document.hidden;
+        document.addEventListener('visibilitychange', () => {
+            isTabActive = !document.hidden;
+            if (isTabActive) {
+                requestAnimationFrame(animate);
+            }
+        });
+
         let time = 0;
         function animate() {
+            if (!isTabActive) return;
             requestAnimationFrame(animate);
             time += 1;
             
