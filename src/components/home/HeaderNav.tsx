@@ -113,78 +113,78 @@ export default function HeaderNav() {
 
         {/* Mobile Dropdown Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden mt-2 p-4 rounded-2xl border border-slate-800 bg-slate-950/95 backdrop-blur-2xl shadow-2xl space-y-2 text-sm font-mono">
+          <div className="lg:hidden mt-2 p-3 rounded-2xl border border-slate-800 bg-slate-950/95 backdrop-blur-2xl shadow-2xl space-y-1.5 text-sm font-sans">
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
-              className={`block p-3 rounded-xl border transition-colors ${
+              className={`flex items-center gap-2.5 py-2 px-3 rounded-xl border transition-colors ${
                 isHomeActive
                   ? 'bg-cyan-500/20 text-cyan-300 font-bold border-cyan-500/40'
                   : 'bg-slate-900/60 hover:bg-cyan-950/30 text-slate-200 font-medium border-slate-800'
               }`}
             >
-              🏠 Home
+              <span>🏠</span> <span>Home</span>
             </Link>
             <Link
               href="/noc"
               onClick={() => setMobileMenuOpen(false)}
-              className={`block p-3 rounded-xl border transition-colors ${
+              className={`flex items-center gap-2.5 py-2 px-3 rounded-xl border transition-colors ${
                 isNocActive
                   ? 'bg-cyan-500/20 text-cyan-300 font-bold border-cyan-500/40'
-                  : 'bg-slate-900/60 hover:bg-cyan-950/30 text-cyan-400 font-bold border-cyan-500/20'
+                  : 'bg-slate-900/60 hover:bg-cyan-950/30 text-cyan-400 font-semibold border-cyan-500/20'
               }`}
             >
-              📋 All 516 NOC Codes Directory →
+              <span>📋</span> <span>NOC Directory</span>
             </Link>
             <Link
               href="/express-entry-draws"
               onClick={() => setMobileMenuOpen(false)}
-              className={`block p-3 rounded-xl border transition-colors ${
+              className={`flex items-center gap-2.5 py-2 px-3 rounded-xl border transition-colors ${
                 isDrawsActive
                   ? 'bg-cyan-500/20 text-cyan-300 font-bold border-cyan-500/40'
-                  : 'bg-slate-900/60 hover:bg-cyan-950/30 text-cyan-400 font-bold border-cyan-500/20'
+                  : 'bg-slate-900/60 hover:bg-cyan-950/30 text-cyan-400 font-semibold border-cyan-500/20'
               }`}
             >
-              📊 Express Entry Draws Tracker (442 Draws) →
+              <span>📊</span> <span>Draws Tracker</span>
             </Link>
             <Link
               href="/crs-calculator"
               onClick={() => setMobileMenuOpen(false)}
-              className={`block p-3 rounded-xl border transition-colors ${
+              className={`flex items-center gap-2.5 py-2 px-3 rounded-xl border transition-colors ${
                 isCrsActive
                   ? 'bg-cyan-500/20 text-cyan-300 font-bold border-cyan-500/40'
-                  : 'bg-slate-900/60 hover:bg-cyan-950/30 text-cyan-400 font-bold border-cyan-500/20'
+                  : 'bg-slate-900/60 hover:bg-cyan-950/30 text-cyan-400 font-semibold border-cyan-500/20'
               }`}
             >
-              🧮 CRS Points Calculator (2026) →
+              <span>🧮</span> <span>CRS Calculator</span>
             </Link>
             <Link
               href="/express-entry"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-cyan-950/30 text-slate-200 hover:text-white transition-colors text-xs font-mono"
+              className="flex items-center gap-2.5 py-2 px-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-cyan-950/30 text-slate-200 hover:text-white font-medium transition-colors"
             >
-              🚀 Priority Category FastPass →
+              <span>🚀</span> <span>Priority Categories</span>
             </Link>
             <Link
               href="/teer"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-cyan-950/30 text-slate-200 hover:text-white transition-colors text-xs font-mono"
+              className="flex items-center gap-2.5 py-2 px-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-cyan-950/30 text-slate-200 hover:text-white font-medium transition-colors"
             >
-              📐 TEER Categories Guide (0 to 5) →
+              <span>📐</span> <span>TEER Guide</span>
             </Link>
             <Link
               href="/noc-converter"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold transition-colors text-xs font-mono"
+              className="flex items-center gap-2.5 py-2 px-3 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-semibold transition-colors"
             >
-              🔄 NOC 2016 to 2021 Converter (4 to 5 Digit) →
+              <span>🔄</span> <span>NOC Converter</span>
             </Link>
             <Link
               href="/wages"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-cyan-950/30 text-slate-200 hover:text-white transition-colors text-xs font-mono"
+              className="flex items-center gap-2.5 py-2 px-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-cyan-950/30 text-slate-200 hover:text-white font-medium transition-colors"
             >
-              💰 Provincial Wages &amp; LMIA Prevailing Rates →
+              <span>💰</span> <span>Provincial Wages</span>
             </Link>
           </div>
         )}
