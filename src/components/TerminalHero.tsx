@@ -122,7 +122,7 @@ export default function ModernHero() {
   }
 
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-between px-6 pt-20 pb-8 overflow-hidden bg-transparent">
+    <section className="relative w-full min-h-screen flex flex-col justify-between px-4 sm:px-6 pt-24 sm:pt-28 pb-6 sm:pb-8 overflow-hidden bg-transparent">
       
       {/* ─── MAIN 2-COLUMN BALANCED HERO (PERFECT VERTICAL FILL) ─── */}
       <div className="relative max-w-7xl mx-auto w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center min-h-0 z-10 pointer-events-auto">
@@ -294,7 +294,7 @@ export default function ModernHero() {
             ref={imageBoxRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="relative w-full max-w-[320px] sm:max-w-[400px] lg:max-w-[440px] aspect-square rounded-3xl p-[2px] overflow-hidden group shadow-[0_25px_60px_-10px_rgba(0,0,0,0.95),0_0_40px_rgba(6,182,212,0.35)] cursor-pointer"
+            className="relative w-full max-w-[270px] sm:max-w-[360px] lg:max-w-[440px] aspect-square rounded-3xl p-[2px] overflow-hidden group shadow-[0_25px_60px_-10px_rgba(0,0,0,0.95),0_0_40px_rgba(6,182,212,0.35)] cursor-pointer"
           >
             {/* Spinning Neon Beam around border */}
             <div className="absolute -inset-[100%] animate-border-beam bg-[conic-gradient(from_0deg,transparent_0_300deg,#00f5ff_340deg,#ffffff_360deg)] pointer-events-none opacity-80" />
@@ -316,11 +316,11 @@ export default function ModernHero() {
       </div>
 
       {/* ─── BOTTOM 1-LINE STATS BAR ─── */}
-      <div className="relative max-w-7xl mx-auto w-full mb-3 sm:mb-5 grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0 z-10">
+      <div className="relative max-w-7xl mx-auto w-full mb-3 sm:mb-5 grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 shrink-0 z-10">
         {QUICK_STATS.map((item, idx) => (
           <div 
             key={idx} 
-            className="group relative p-[1px] rounded-2xl overflow-hidden shadow-[0_8px_25px_rgba(0,0,0,0.6)] hover:-translate-y-1.5 hover:shadow-[0_15px_35px_rgba(6,182,212,0.3)] transition-all duration-300 cursor-pointer"
+            className="group relative h-full flex flex-col p-[1px] rounded-2xl overflow-hidden shadow-[0_8px_25px_rgba(0,0,0,0.6)] hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(6,182,212,0.3)] transition-all duration-300 cursor-pointer"
           >
             {/* Animated Rotating Conic Gradient Light Beam on Border */}
             <div 
@@ -328,16 +328,21 @@ export default function ModernHero() {
               style={{ animationDuration: `${3.5 + idx * 0.8}s` }}
             />
 
-            {/* Inner Content Card */}
-            <div className="relative flex items-center gap-3 px-3.5 py-2 rounded-[15px] bg-slate-950/90 border border-cyan-500/20 backdrop-blur-md">
-              <div className="text-lg sm:text-xl font-extrabold text-white font-[var(--font-space)] tracking-tight group-hover:text-cyan-300 transition-colors">
-                {item.val}
+            {/* Inner Content Card (Uniform height and symmetrical layout across all screen sizes) */}
+            <div className="relative h-full flex flex-col justify-between p-3 sm:p-3.5 rounded-[15px] bg-slate-950/90 border border-cyan-500/20 backdrop-blur-md">
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="text-lg sm:text-xl font-extrabold text-white font-[var(--font-space)] tracking-tight group-hover:text-cyan-300 transition-colors">
+                  {item.val}
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/80 shadow-[0_0_8px_rgba(34,211,238,0.8)] shrink-0 sm:hidden" />
               </div>
-              <div className="border-l border-slate-800/80 pl-3">
-                <div className="text-[11px] font-semibold text-slate-200 leading-none group-hover:text-cyan-300 transition-colors">
+              <div className="mt-1 sm:mt-1.5 border-t border-slate-800/80 pt-1.5 sm:pt-2">
+                <div className="text-[11px] sm:text-xs font-semibold text-slate-200 leading-tight group-hover:text-cyan-300 transition-colors line-clamp-1 sm:line-clamp-none">
                   {item.title}
                 </div>
-                <div className="text-[9px] text-slate-400 mt-0.5">{item.desc}</div>
+                <div className="text-[9px] sm:text-[10px] text-slate-400 mt-0.5 leading-tight line-clamp-1 sm:line-clamp-none">
+                  {item.desc}
+                </div>
               </div>
             </div>
           </div>
