@@ -28,11 +28,11 @@ export default function HeaderNav() {
             </span>
           </Link>
 
-          {/* Right-aligned Navigation & Action CTA */}
-          <div className="flex items-center gap-6 ml-auto">
+          {/* Right-aligned Navigation Links */}
+          <div className="flex items-center gap-4 ml-auto">
             
             {/* Page Links on the Right */}
-            <nav className="hidden sm:flex items-center gap-6 text-sm font-medium">
+            <nav className="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-medium">
               <Link
                 href="/"
                 className={`transition-colors ${
@@ -91,20 +91,11 @@ export default function HeaderNav() {
               </Link>
             </nav>
 
-            {/* Action CTA Button */}
-            <Link
-              href="/noc"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/15 to-blue-500/15 hover:from-cyan-500/25 hover:to-blue-500/25 border border-cyan-500/40 text-cyan-300 hover:text-white text-xs font-mono font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.15)] cursor-pointer"
-            >
-              <span>Browse All 516 NOCs</span>
-              <span>→</span>
-            </Link>
-
             {/* Mobile Hamburger Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden p-2 rounded-xl border border-slate-800 bg-slate-900/80 text-slate-300 hover:text-white hover:border-slate-700 transition-colors cursor-pointer"
+              className="lg:hidden p-2 rounded-xl border border-slate-800 bg-slate-900/80 text-slate-300 hover:text-white hover:border-slate-700 transition-colors cursor-pointer"
               aria-label="Toggle navigation menu"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +113,7 @@ export default function HeaderNav() {
 
         {/* Mobile Dropdown Drawer */}
         {mobileMenuOpen && (
-          <div className="sm:hidden mt-2 p-4 rounded-2xl border border-slate-800 bg-slate-950/95 backdrop-blur-2xl shadow-2xl space-y-2 text-sm font-mono">
+          <div className="lg:hidden mt-2 p-4 rounded-2xl border border-slate-800 bg-slate-950/95 backdrop-blur-2xl shadow-2xl space-y-2 text-sm font-mono">
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
